@@ -37,6 +37,7 @@
             label2 = new Label();
             back = new Button();
             label3 = new Label();
+            select = new Button();
             ((System.ComponentModel.ISupportInitialize)Fire).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Water).BeginInit();
             ((System.ComponentModel.ISupportInitialize)EArth).BeginInit();
@@ -144,12 +145,25 @@
             label3.TabIndex = 7;
             label3.Text = "Lumen";
             // 
+            // select
+            // 
+            select.BackColor = SystemColors.ActiveCaption;
+            select.FlatStyle = FlatStyle.Popup;
+            select.Font = new Font("Arial Rounded MT Bold", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            select.Location = new Point(543, 575);
+            select.Name = "select";
+            select.Size = new Size(113, 56);
+            select.TabIndex = 8;
+            select.Text = "SELECT";
+            select.UseVisualStyleBackColor = false;
+            // 
             // ChooseCharacters
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1182, 753);
+            Controls.Add(select);
             Controls.Add(label3);
             Controls.Add(back);
             Controls.Add(label2);
@@ -182,5 +196,6 @@
         private PictureBox EArth;
         private PictureBox Wind;
         private Label label3;
+        private Button select;
     }
 }
