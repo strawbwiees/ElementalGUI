@@ -38,6 +38,7 @@
             back = new Button();
             label3 = new Label();
             select = new Button();
+            label4 = new Label();
             ((System.ComponentModel.ISupportInitialize)Fire).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Water).BeginInit();
             ((System.ComponentModel.ISupportInitialize)EArth).BeginInit();
@@ -145,18 +146,33 @@
             label3.Size = new Size(107, 32);
             label3.TabIndex = 7;
             label3.Text = "Lumen";
+            label3.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // select
             // 
             select.BackColor = SystemColors.ActiveCaption;
             select.FlatStyle = FlatStyle.Popup;
             select.Font = new Font("Arial Rounded MT Bold", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            select.Location = new Point(543, 575);
+            select.Location = new Point(543, 599);
             select.Name = "select";
             select.Size = new Size(113, 56);
             select.TabIndex = 8;
             select.Text = "SELECT";
             select.UseVisualStyleBackColor = false;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.BackColor = Color.Transparent;
+            label4.Font = new Font("Arial Rounded MT Bold", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label4.ForeColor = SystemColors.ButtonHighlight;
+            label4.Location = new Point(420, 499);
+            label4.Name = "label4";
+            label4.Size = new Size(103, 32);
+            label4.TabIndex = 9;
+            label4.Text = "Ripple";
+            label4.TextAlign = ContentAlignment.MiddleCenter;
+            label4.Click += label4_Click;
             // 
             // ChooseCharacters
             // 
@@ -164,6 +180,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1182, 753);
+            Controls.Add(label4);
             Controls.Add(select);
             Controls.Add(label3);
             Controls.Add(back);
@@ -198,5 +215,6 @@
         private PictureBox Wind;
         private Label label3;
         private Button select;
+        private Label label4;
     }
 }
