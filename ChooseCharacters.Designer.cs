@@ -68,6 +68,7 @@
             Water.SizeMode = PictureBoxSizeMode.CenterImage;
             Water.TabIndex = 1;
             Water.TabStop = false;
+            Water.Click += Water_Click;
             // 
             // EArth
             // 

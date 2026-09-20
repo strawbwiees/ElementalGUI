@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using static ElementalGUI.gameData;
 
@@ -7,52 +8,126 @@ namespace ElementalGUI
 {
     public partial class ChooseCharacters : Form
     {
+        // ==========================================
+        // VARIABLES
+        // ==========================================
+
         private int currentPlayer = 1;
+
         private Character selectedCharacter = null;
+
+        private PictureBox selectedPicture = null;
+
+
+        // ==========================================
+        // CONSTRUCTOR
+        // ==========================================
 
         public ChooseCharacters()
         {
             InitializeComponent();
 
+            // Initial screen
             label1.Text = "CHOOSE YOUR CHARACTER";
             label2.Text = "Player 1";
         }
 
-        // FIRE
+
+        // ==========================================
+        // FIRE - LUMEN
+        // ==========================================
+
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            selectedCharacter = new Character("Lumen", "Fire", 20);
-
-            MessageBox.Show("Lumen selected!");
+            SelectCharacter(
+                new Character("Lumen", "Fire", 20),
+                sender as PictureBox
+            );
         }
 
-        // WATER
+
+        // ==========================================
+        // WATER - RIPPLE
+        // ==========================================
+
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            selectedCharacter = new Character("Ripple", "Water", 20);
-
-            MessageBox.Show("Ripple selected!");
+            SelectCharacter(
+                new Character("Ripple", "Water", 20),
+                sender as PictureBox
+            );
         }
 
-        // EARTH
+
+        // ==========================================
+        // EARTH - GRUNCHWOOD
+        // ==========================================
+
         private void pictureBox3_Click(object sender, EventArgs e)
         {
-            selectedCharacter = new Character("Grunchwood", "Earth", 20);
-
-            MessageBox.Show("Grunchwood selected!");
+            SelectCharacter(
+                new Character("Grunchwood", "Earth", 20),
+                sender as PictureBox
+            );
         }
 
-        // AIR
+
+        // ==========================================
+        // AIR - GALE
+        // ==========================================
+
         private void pictureBox4_Click(object sender, EventArgs e)
         {
-            selectedCharacter = new Character("Gale", "Air", 20);
-
-            MessageBox.Show("Gale selected!");
+            SelectCharacter(
+                new Character("Gale", "Air", 20),
+                sender as PictureBox
+            );
         }
 
+
+        // ==========================================
+        // SELECT CHARACTER
+        // ==========================================
+
+        private void SelectCharacter(
+            Character character,
+            PictureBox picture)
+        {
+            // Save selected character
+            selectedCharacter = character;
+
+
+            // Remove previous highlight
+            if (selectedPicture != null)
+            {
+                selectedPicture.BorderStyle =
+                    BorderStyle.None;
+            }
+
+
+            // Save the newly clicked picture
+            selectedPicture = picture;
+
+
+            // Highlight the newly selected picture
+            if (selectedPicture != null)
+            {
+                selectedPicture.BorderStyle =
+                    BorderStyle.Fixed3D;
+            }
+        }
+
+
+        // ==========================================
         // SELECT BUTTON
+        // ==========================================
+
         private void select_Click(object sender, EventArgs e)
         {
+            // --------------------------------------
+            // No character selected
+            // --------------------------------------
+
             if (selectedCharacter == null)
             {
                 MessageBox.Show(
@@ -65,49 +140,79 @@ namespace ElementalGUI
                 return;
             }
 
+
+            // ======================================
             // PLAYER 1
+            // ======================================
+
             if (currentPlayer == 1)
             {
+                // Save Player 1
                 GameData.Player1 = selectedCharacter;
 
-                currentPlayer = 2;
-                selectedCharacter = null;
 
+                // Move to Player 2
+                currentPlayer = 2;
+
+
+                // Change the label
                 label2.Text = "Player 2";
 
-                MessageBox.Show(
-                    "Player 1 selected " + GameData.Player1.GetName() +
-                    "!\n\nNow it's Player 2's turn.",
-                    "Player 1 Selected"
-                );
+
+                // Clear selected character
+                selectedCharacter = null;
+
+
+                // Remove Player 1's highlight
+                if (selectedPicture != null)
+                {
+                    selectedPicture.BorderStyle =
+                        BorderStyle.None;
+
+                    selectedPicture = null;
+                }
             }
 
+
+            // ======================================
             // PLAYER 2
+            // ======================================
+
             else
             {
+                // Save Player 2
                 GameData.Player2 = selectedCharacter;
 
-                MessageBox.Show(
-                    "Player 2 selected " + GameData.Player2.GetName() +
-                    "!",
-                    "Player 2 Selected"
-                );
 
+                // Open Battle
                 Battle battleForm = new Battle();
+
                 battleForm.Show();
 
+
+                // Hide Character Selection
                 this.Hide();
             }
         }
 
+
+        // ==========================================
         // BACK BUTTON
+        // ==========================================
+
         private void back_Click(object sender, EventArgs e)
         {
             MainMenu mainMenuForm = new MainMenu();
+
             mainMenuForm.Show();
 
             this.Hide();
         }
+
+
+        // ==========================================
+        // LABEL EVENTS
+        // ==========================================
 
         private void label1_Click(object sender, EventArgs e)
         {
@@ -116,6 +221,15 @@ namespace ElementalGUI
         private void label2_Click(object sender, EventArgs e)
         {
         }
+
+
+        // ==========================================
+        // WATER EVENT
+        // ==========================================
+
+        private void Water_Click(object sender, EventArgs e)
+        {
+        }
     }
 }
-```
+
