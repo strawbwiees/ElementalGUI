@@ -44,7 +44,7 @@
             button1.TabIndex = 0;
             button1.Text = "PLAY";
             button1.UseVisualStyleBackColor = false;
-            button1.Click += play; 
+            button1.Click += play;
             // 
             // button2
             // 
