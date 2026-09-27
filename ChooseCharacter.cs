@@ -42,7 +42,11 @@ namespace ElementalGUI
             pictureBox3.Paint += Character_Paint;
             pictureBox4.Paint += Character_Paint;
 
-            button1.Click += btnSelect_Click;
+            // DO NOT add:
+            // button1.Click += btnSelect_Click;
+            //
+            // The button is already connected to button1_Click
+            // through the Designer.
         }
 
         // Runs whenever a character is clicked
@@ -50,7 +54,6 @@ namespace ElementalGUI
         {
             selectedCharacter = sender as PictureBox;
 
-            // Refresh the character pictures
             pictureBox1.Invalidate();
             pictureBox2.Invalidate();
             pictureBox3.Invalidate();
@@ -77,17 +80,17 @@ namespace ElementalGUI
             }
         }
 
-        // SELECT button
-        private void btnSelect_Click(object sender, EventArgs e)
+        // SELECT BUTTON
+        private void button1_Click(object sender, EventArgs e)
         {
-            // Make sure the player selected someone
+            // Make sure a character was selected
             if (selectedCharacter == null)
             {
                 MessageBox.Show("Please choose a character first.");
                 return;
             }
 
-            // Player 1
+            // PLAYER 1
             if (currentPlayer == 1)
             {
                 player1Character = selectedCharacter.Tag.ToString();
@@ -96,7 +99,7 @@ namespace ElementalGUI
 
                 PreparePlayer2();
             }
-            // Player 2
+            // PLAYER 2
             else
             {
                 player2Character = selectedCharacter.Tag.ToString();
@@ -105,12 +108,12 @@ namespace ElementalGUI
             }
         }
 
-        // Change the screen to Player 2
+        // Change to Player 2
         private void PreparePlayer2()
         {
             label2.Text = "PLAYER 2";
 
-            // Clear the current selection
+            // Clear current selection
             selectedCharacter = null;
 
             // Prevent Player 2 from choosing Player 1's character
@@ -119,65 +122,54 @@ namespace ElementalGUI
             pictureBox3.Enabled = player1Character != "Grunch";
             pictureBox4.Enabled = player1Character != "Gale";
 
-            // Refresh the character pictures
             pictureBox1.Invalidate();
             pictureBox2.Invalidate();
             pictureBox3.Invalidate();
             pictureBox4.Invalidate();
         }
 
-        // Runs after Player 2 selects a character
+        // Open confirmation after Player 2 selects
         private void StartGame()
         {
             ConfirmSelection confirmation =
-                new ConfirmSelection(player1Character, player2Character);
+                new ConfirmSelection(
+                    player1Character,
+                    player2Character
+                );
 
             confirmation.ShowDialog(this);
 
+            // Only continue if CONFIRM was clicked
             if (confirmation.Confirmed)
             {
-                // This is where your actual game will open.
-                MessageBox.Show("Game Starting!");
+                BattleIntro battleIntro =
+                    new BattleIntro(
+                        player1Character,
+                        player2Character
+                    );
+
+                this.Hide();
+
+                battleIntro.ShowDialog();
+
+                this.Show();
             }
         }
 
         private void label2_Click(object sender, EventArgs e)
         {
-
         }
 
         private void label1_Click(object sender, EventArgs e)
         {
-
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void pictureBox4_Click(object sender, EventArgs e)
         {
-            if (selectedCharacter == null)
-            {
-                MessageBox.Show("Please choose a character first.");
-                return;
-            }
-
-            if (currentPlayer == 1)
-            {
-                player1Character = selectedCharacter.Tag.ToString();
-
-                currentPlayer = 2;
-
-                PreparePlayer2();
-            }
-            else
-            {
-                player2Character = selectedCharacter.Tag.ToString();
-
-                StartGame();
-            }
         }
     }
 }

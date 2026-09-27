@@ -96,6 +96,7 @@
             // 
             // pictureBox1
             // 
+            pictureBox1.BackColor = Color.Transparent;
             pictureBox1.Location = new Point(145, 260);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(249, 320);
@@ -105,6 +106,7 @@
             // 
             // pictureBox2
             // 
+            pictureBox2.BackColor = Color.Transparent;
             pictureBox2.Location = new Point(762, 260);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(249, 320);

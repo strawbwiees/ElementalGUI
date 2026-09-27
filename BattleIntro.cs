@@ -78,9 +78,6 @@ namespace ElementalGUI
         // START BATTLE
         private void button1_Click(object sender, EventArgs e)
         {
-            // Put your actual Battle Form here later.
-
-            MessageBox.Show("Battle Starting!");
         }
 
         private void label1_Click(object sender, EventArgs e)

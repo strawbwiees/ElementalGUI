@@ -118,6 +118,7 @@
             pictureBox4.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox4.TabIndex = 5;
             pictureBox4.TabStop = false;
+            pictureBox4.Click += pictureBox4_Click;
             // 
             // label3
             // 
@@ -183,6 +184,7 @@
             button1.TabIndex = 10;
             button1.Text = "SELECT";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // ChooseCharacter
             // 
