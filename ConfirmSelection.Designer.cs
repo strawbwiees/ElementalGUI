@@ -43,7 +43,7 @@
             button1.BackColor = Color.Red;
             button1.FlatStyle = FlatStyle.Popup;
             button1.ForeColor = SystemColors.Window;
-            button1.Location = new Point(102, 322);
+            button1.Location = new Point(93, 320);
             button1.Name = "button1";
             button1.Size = new Size(117, 31);
             button1.TabIndex = 0;
@@ -55,7 +55,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(144, 29);
+            label1.Location = new Point(149, 29);
             label1.Name = "label1";
             label1.Size = new Size(196, 23);
             label1.TabIndex = 1;
@@ -66,7 +66,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label2.Location = new Point(125, 122);
+            label2.Location = new Point(128, 118);
             label2.Name = "label2";
             label2.Size = new Size(98, 23);
             label2.TabIndex = 2;
@@ -77,7 +77,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label3.Location = new Point(125, 180);
+            label3.Location = new Point(128, 176);
             label3.Name = "label3";
             label3.Size = new Size(99, 23);
             label3.TabIndex = 3;
@@ -88,7 +88,7 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label4.Location = new Point(255, 122);
+            label4.Location = new Point(258, 118);
             label4.Name = "label4";
             label4.Size = new Size(113, 23);
             label4.TabIndex = 4;
@@ -99,7 +99,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label5.Location = new Point(255, 180);
+            label5.Location = new Point(258, 176);
             label5.Name = "label5";
             label5.Size = new Size(113, 23);
             label5.TabIndex = 5;
@@ -111,7 +111,7 @@
             button2.BackColor = SystemColors.ActiveCaption;
             button2.FlatStyle = FlatStyle.Popup;
             button2.ForeColor = Color.Black;
-            button2.Location = new Point(276, 322);
+            button2.Location = new Point(267, 320);
             button2.Name = "button2";
             button2.Size = new Size(117, 31);
             button2.TabIndex = 6;
@@ -123,7 +123,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label6.Location = new Point(185, 262);
+            label6.Location = new Point(176, 260);
             label6.Name = "label6";
             label6.Size = new Size(147, 23);
             label6.TabIndex = 7;
