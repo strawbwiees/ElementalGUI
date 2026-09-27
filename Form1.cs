@@ -9,7 +9,7 @@ namespace ElementalGUI
 
         private void play(object sender, EventArgs e)
         {
-            ChooseCharacters chooseCharactersForm = new ChooseCharacters();
+            ChooseCharacter chooseCharactersForm = new ChooseCharacter();
             chooseCharactersForm.Show();
             this.Hide();
         }

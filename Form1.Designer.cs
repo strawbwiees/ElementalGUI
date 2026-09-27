@@ -37,7 +37,7 @@
             // 
             button1.BackColor = SystemColors.ActiveCaption;
             button1.FlatStyle = FlatStyle.Popup;
-            button1.Font = new Font("Arial Rounded MT Bold", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            button1.Font = new Font("Marykate", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button1.Location = new Point(419, 427);
             button1.Name = "button1";
             button1.Size = new Size(308, 59);
@@ -50,7 +50,7 @@
             // 
             button2.BackColor = Color.IndianRed;
             button2.FlatStyle = FlatStyle.Popup;
-            button2.Font = new Font("Arial Rounded MT Bold", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            button2.Font = new Font("Marykate", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button2.Location = new Point(419, 516);
             button2.Name = "button2";
             button2.Size = new Size(308, 59);
