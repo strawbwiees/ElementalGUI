@@ -129,12 +129,16 @@ namespace ElementalGUI
         // Runs after Player 2 selects a character
         private void StartGame()
         {
-            MessageBox.Show(
-                "Player 1: " + player1Character +
-                "\nPlayer 2: " + player2Character
-            );
+            ConfirmSelection confirmation =
+                new ConfirmSelection(player1Character, player2Character);
 
-            // Later, open your actual game form here.
+            confirmation.ShowDialog(this);
+
+            if (confirmation.Confirmed)
+            {
+                // This is where your actual game will open.
+                MessageBox.Show("Game Starting!");
+            }
         }
 
         private void label2_Click(object sender, EventArgs e)
