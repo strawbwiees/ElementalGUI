@@ -47,7 +47,7 @@
             label1.BackColor = Color.Transparent;
             label1.Font = new Font("Marykate", 28.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(172, 197);
+            label1.Location = new Point(172, 177);
             label1.Name = "label1";
             label1.Size = new Size(195, 39);
             label1.TabIndex = 0;
@@ -60,7 +60,7 @@
             label2.BackColor = Color.Transparent;
             label2.Font = new Font("Marykate", 28.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.White;
-            label2.Location = new Point(788, 197);
+            label2.Location = new Point(788, 177);
             label2.Name = "label2";
             label2.Size = new Size(195, 39);
             label2.TabIndex = 1;
@@ -73,7 +73,7 @@
             label3.BackColor = Color.Transparent;
             label3.Font = new Font("Marykate", 47.9999962F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label3.ForeColor = Color.White;
-            label3.Location = new Point(541, 351);
+            label3.Location = new Point(541, 331);
             label3.Name = "label3";
             label3.Size = new Size(121, 67);
             label3.TabIndex = 2;
@@ -86,7 +86,7 @@
             button1.FlatStyle = FlatStyle.Popup;
             button1.Font = new Font("Marykate", 19.7999973F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button1.ForeColor = SystemColors.ActiveCaptionText;
-            button1.Location = new Point(445, 629);
+            button1.Location = new Point(445, 628);
             button1.Name = "button1";
             button1.Size = new Size(295, 68);
             button1.TabIndex = 3;
@@ -97,9 +97,9 @@
             // pictureBox1
             // 
             pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.Location = new Point(145, 260);
+            pictureBox1.Location = new Point(145, 240);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(249, 320);
+            pictureBox1.Size = new Size(249, 354);
             pictureBox1.TabIndex = 4;
             pictureBox1.TabStop = false;
             pictureBox1.Click += pictureBox1_Click;
@@ -107,9 +107,9 @@
             // pictureBox2
             // 
             pictureBox2.BackColor = Color.Transparent;
-            pictureBox2.Location = new Point(762, 260);
+            pictureBox2.Location = new Point(762, 240);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(249, 320);
+            pictureBox2.Size = new Size(249, 354);
             pictureBox2.TabIndex = 5;
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
@@ -118,7 +118,7 @@
             // 
             pictureBox3.BackColor = Color.Transparent;
             pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            pictureBox3.Location = new Point(446, 57);
+            pictureBox3.Location = new Point(446, 37);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(274, 108);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
