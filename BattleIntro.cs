@@ -78,6 +78,17 @@ namespace ElementalGUI
         // START BATTLE
         private void button1_Click(object sender, EventArgs e)
         {
+            BattleForm battleForm =
+                new BattleForm(
+                    player1Character,
+                    player2Character
+                );
+
+            this.Hide();
+
+            battleForm.ShowDialog();
+
+            this.Show();
         }
 
         private void label1_Click(object sender, EventArgs e)
