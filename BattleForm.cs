@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -6,37 +7,37 @@ namespace ElementalGUI
 {
     public partial class BattleForm : Form
     {
-        // ==============================
+
+        // =========================================================
         // CHARACTER DATA
-        // ==============================
+        // =========================================================
 
         private string player1Character;
         private string player2Character;
 
-        // ==============================
-        // HP
-        // ==============================
-
         private int player1HP = 100;
         private int player2HP = 100;
 
-        // ==============================
-        // TURN
-        // ==============================
-
         private bool player1Turn = true;
 
-        // ==============================
+        // =========================================================
         // ANIMATION
-        // ==============================
+        // =========================================================
 
         private System.Windows.Forms.Timer animationTimer;
+
         private int animationStep = 0;
 
         private bool isAnimating = false;
 
+        private string currentAnimation = "";
+
         private Point player1StartPosition;
         private Point player2StartPosition;
+
+        // Projectile starting and target positions
+        private Point projectileStartPosition;
+        private Point projectileTargetPosition;
 
 
         // =========================================================
@@ -46,15 +47,16 @@ namespace ElementalGUI
         public BattleForm(string player1, string player2)
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
 
             player1Character = player1;
             player2Character = player2;
 
-            // Remember starting positions
+            // Remember original character positions
             player1StartPosition = pictureBox1.Location;
             player2StartPosition = pictureBox2.Location;
 
-            // Setup timer
+            // Setup animation timer
             animationTimer = new System.Windows.Forms.Timer();
             animationTimer.Interval = 20;
             animationTimer.Tick += AnimationTimer_Tick;
@@ -64,16 +66,14 @@ namespace ElementalGUI
 
 
         // =========================================================
-        // SETUP
+        // SETUP BATTLE
         // =========================================================
 
         private void SetupBattle()
         {
-            // Character names
             label1.Text = player1Character.ToUpper();
             label2.Text = player2Character.ToUpper();
 
-            // Turn
             label3.Text = player1Character.ToUpper() + "'S TURN";
 
             // HP
@@ -89,14 +89,22 @@ namespace ElementalGUI
             label4.Text = "100/100";
             label5.Text = "100/100";
 
-            // Battle message
             label6.Text = "Choose your action!";
 
             // Load characters
             LoadCharacterImages();
 
-            // Attack effect is hidden for now
+            // -----------------------------------------------------
+            // ATTACK EFFECT PICTURE BOXES
+            // -----------------------------------------------------
+
+            // PB3 = SPECIAL ATTACK EFFECT
             pictureBox3.Visible = false;
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+
+            // PB4 = PROJECTILE
+            pictureBox4.Visible = false;
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
         }
 
 
@@ -141,7 +149,7 @@ namespace ElementalGUI
 
 
         // =========================================================
-        // ATTACK BUTTON
+        // BASIC ATTACK BUTTON
         // =========================================================
 
         private void button1_Click(object sender, EventArgs e)
@@ -155,6 +163,7 @@ namespace ElementalGUI
 
         // =========================================================
         // BASIC ATTACK
+        // PB4 = PROJECTILE
         // =========================================================
 
         private void BasicAttack()
@@ -163,24 +172,91 @@ namespace ElementalGUI
 
             DisableButtons();
 
+            currentAnimation = "BASIC";
+
+            animationStep = 0;
+
+            string attacker =
+                player1Turn
+                ? player1Character
+                : player2Character;
+
+            label6.Text =
+                attacker + " used BASIC ATTACK!";
+
+            // Load projectile
+            pictureBox4.Image =
+                GetBasicAttackImage(attacker);
+
+            pictureBox4.Visible = true;
+
+            // -----------------------------------------------------
+            // PLAYER 1 ATTACKING
+            // -----------------------------------------------------
+
             if (player1Turn)
             {
-                label6.Text =
-                    player1Character + " used basic attack!";
+                projectileStartPosition = new Point(
+                    pictureBox1.Right - 30,
+                    pictureBox1.Top + pictureBox1.Height / 2 - 50
+                );
 
-                animationStep = 0;
-                animationTimer.Tag = "PLAYER1";
+                projectileTargetPosition = new Point(
+                    pictureBox2.Left,
+                    pictureBox2.Top + pictureBox2.Height / 2 - 50
+                );
             }
+
+            // -----------------------------------------------------
+            // PLAYER 2 ATTACKING
+            // -----------------------------------------------------
+
             else
             {
-                label6.Text =
-                    player2Character + " used basic attack!";
+                projectileStartPosition = new Point(
+                    pictureBox2.Left - 100,
+                    pictureBox2.Top + pictureBox2.Height / 2 - 50
+                );
 
-                animationStep = 0;
-                animationTimer.Tag = "PLAYER2";
+                projectileTargetPosition = new Point(
+                    pictureBox1.Right - 30,
+                    pictureBox1.Top + pictureBox1.Height / 2 - 50
+                );
             }
 
+            pictureBox4.Location = projectileStartPosition;
+
             animationTimer.Start();
+        }
+
+
+        // =========================================================
+        // BASIC ATTACK IMAGE
+        // =========================================================
+
+        private Image GetBasicAttackImage(string character)
+        {
+            if (character == "Lumen")
+            {
+                return Properties.Resources.FireAttack;
+            }
+
+            if (character == "Ripple")
+            {
+                return Properties.Resources.WaterAttack;
+            }
+
+            if (character == "Grunch")
+            {
+                return Properties.Resources.EarthAttack;
+            }
+
+            if (character == "Gale")
+            {
+                return Properties.Resources.WindAttack;
+            }
+
+            return null;
         }
 
 
@@ -192,45 +268,73 @@ namespace ElementalGUI
         {
             animationStep++;
 
-            if (animationTimer.Tag.ToString() == "PLAYER1")
+            if (currentAnimation == "BASIC")
             {
-                AnimatePlayer1Attack();
+                AnimateBasicAttack();
             }
-            else
+
+            else if (currentAnimation == "SPECIAL")
             {
-                AnimatePlayer2Attack();
+                AnimateSpecialAttack();
             }
         }
 
 
         // =========================================================
-        // PLAYER 1 ATTACK
+        // BASIC ATTACK ANIMATION
         // =========================================================
 
-        private void AnimatePlayer1Attack()
+        private void AnimateBasicAttack()
         {
-            // Move toward Player 2
-            if (animationStep <= 10)
+            // -----------------------------------------------------
+            // MOVE PROJECTILE
+            // -----------------------------------------------------
+
+            if (animationStep <= 20)
             {
-                pictureBox1.Left += 8;
+                MoveProjectile();
             }
 
-            // Hit
-            else if (animationStep == 11)
-            {
-                DamagePlayer2(20);
+            // -----------------------------------------------------
+            // HIT
+            // -----------------------------------------------------
 
-                // Shake Player 2
-                pictureBox2.Left += 15;
+            else if (animationStep == 21)
+            {
+                pictureBox4.Visible = false;
+
+                if (player1Turn)
+                {
+                    DamagePlayer2(20);
+
+                    // Enemy shake
+                    pictureBox2.Left += 15;
+                }
+                else
+                {
+                    DamagePlayer1(20);
+
+                    // Enemy shake
+                    pictureBox1.Left -= 15;
+                }
             }
 
-            // Return
-            else if (animationStep <= 21)
+            // -----------------------------------------------------
+            // RESET
+            // -----------------------------------------------------
+
+            else if (animationStep <= 26)
             {
-                pictureBox1.Left -= 8;
+                if (player1Turn)
+                {
+                    pictureBox2.Left -= 3;
+                }
+                else
+                {
+                    pictureBox1.Left += 3;
+                }
             }
 
-            // Finish
             else
             {
                 EndAttack();
@@ -239,37 +343,304 @@ namespace ElementalGUI
 
 
         // =========================================================
-        // PLAYER 2 ATTACK
+        // MOVE PROJECTILE
         // =========================================================
 
-        private void AnimatePlayer2Attack()
+        private void MoveProjectile()
         {
-            // Move toward Player 1
-            if (animationStep <= 10)
+            int startX = projectileStartPosition.X;
+            int startY = projectileStartPosition.Y;
+
+            int targetX = projectileTargetPosition.X;
+            int targetY = projectileTargetPosition.Y;
+
+            float progress =
+                animationStep / 20f;
+
+            int newX =
+                startX +
+                (int)((targetX - startX) * progress);
+
+            int newY =
+                startY +
+                (int)((targetY - startY) * progress);
+
+            pictureBox4.Location =
+                new Point(newX, newY);
+        }
+
+
+        // =========================================================
+        // SPECIAL ATTACK BUTTON
+        // =========================================================
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (isAnimating)
+                return;
+
+            SpecialAttack();
+        }
+
+
+        // =========================================================
+        // SPECIAL ATTACK
+        //
+        // PB3 = LARGE SPECIAL EFFECT
+        // PB4 = PROJECTILE
+        // =========================================================
+
+        private void SpecialAttack()
+        {
+            isAnimating = true;
+
+            DisableButtons();
+
+            currentAnimation = "SPECIAL";
+
+            animationStep = 0;
+
+            string attacker =
+                player1Turn
+                ? player1Character
+                : player2Character;
+
+            label6.Text =
+                attacker + " used SPECIAL ATTACK!";
+
+            // -----------------------------------------------------
+            // LOAD SPECIAL EFFECT
+            // -----------------------------------------------------
+
+            pictureBox3.Image =
+                GetSpecialAttackImage(attacker);
+
+            pictureBox3.Visible = true;
+
+            // -----------------------------------------------------
+            // LOAD PROJECTILE
+            // -----------------------------------------------------
+
+            pictureBox4.Image =
+                GetSpecialProjectileImage(attacker);
+
+            pictureBox4.Visible = false;
+
+            animationTimer.Start();
+        }
+
+
+        // =========================================================
+        // SPECIAL ATTACK BACKGROUND EFFECT
+        // PB3
+        // =========================================================
+
+        private Image GetSpecialAttackImage(string character)
+        {
+            if (character == "Lumen")
             {
-                pictureBox2.Left -= 8;
+                return Properties.Resources.FireBG;
             }
 
-            // Hit
-            else if (animationStep == 11)
+            if (character == "Ripple")
             {
-                DamagePlayer1(20);
-
-                // Shake Player 1
-                pictureBox1.Left -= 15;
+                return Properties.Resources.WaterBG;
             }
 
-            // Return
-            else if (animationStep <= 21)
+            if (character == "Grunch")
             {
-                pictureBox2.Left += 8;
+                return Properties.Resources.EarthBG;
             }
 
-            // Finish
+            if (character == "Gale")
+            {
+                return Properties.Resources.WindBG;
+            }
+
+            return null;
+        }
+
+
+        // =========================================================
+        // SPECIAL PROJECTILE
+        // PB4
+        // =========================================================
+
+        private Image GetSpecialProjectileImage(string character)
+        {
+            if (character == "Lumen")
+            {
+                return Properties.Resources.FireAttack;
+            }
+
+            if (character == "Ripple")
+            {
+                return Properties.Resources.WaterAttack;
+            }
+
+            if (character == "Grunch")
+            {
+                return Properties.Resources.EarthAttack;
+            }
+
+            if (character == "Gale")
+            {
+                return Properties.Resources.WindAttack;
+            }
+
+            return null;
+        }
+
+
+        // =========================================================
+        // SPECIAL ATTACK ANIMATION
+        // =========================================================
+
+        private void AnimateSpecialAttack()
+        {
+            // -----------------------------------------------------
+            // PHASE 1
+            // SPECIAL EFFECT APPEARS
+            // -----------------------------------------------------
+
+            if (animationStep <= 25)
+            {
+                // Keep special effect visible
+                pictureBox3.Visible = true;
+            }
+
+            // -----------------------------------------------------
+            // PHASE 2
+            // PROJECTILE STARTS
+            // -----------------------------------------------------
+
+            else if (animationStep == 26)
+            {
+                pictureBox3.Visible = false;
+
+                pictureBox4.Visible = true;
+
+                if (player1Turn)
+                {
+                    projectileStartPosition = new Point(
+                        pictureBox1.Right - 30,
+                        pictureBox1.Top +
+                        pictureBox1.Height / 2 - 50
+                    );
+
+                    projectileTargetPosition = new Point(
+                        pictureBox2.Left,
+                        pictureBox2.Top +
+                        pictureBox2.Height / 2 - 50
+                    );
+                }
+                else
+                {
+                    projectileStartPosition = new Point(
+                        pictureBox2.Left - 100,
+                        pictureBox2.Top +
+                        pictureBox2.Height / 2 - 50
+                    );
+
+                    projectileTargetPosition = new Point(
+                        pictureBox1.Right - 30,
+                        pictureBox1.Top +
+                        pictureBox1.Height / 2 - 50
+                    );
+                }
+
+                pictureBox4.Location =
+                    projectileStartPosition;
+            }
+
+            // -----------------------------------------------------
+            // PHASE 3
+            // PROJECTILE MOVES
+            // -----------------------------------------------------
+
+            else if (animationStep <= 46)
+            {
+                MoveSpecialProjectile();
+            }
+
+            // -----------------------------------------------------
+            // PHASE 4
+            // HIT
+            // -----------------------------------------------------
+
+            else if (animationStep == 47)
+            {
+                pictureBox4.Visible = false;
+
+                if (player1Turn)
+                {
+                    DamagePlayer2(35);
+
+                    pictureBox2.Left += 20;
+                }
+                else
+                {
+                    DamagePlayer1(35);
+
+                    pictureBox1.Left -= 20;
+                }
+            }
+
+            // -----------------------------------------------------
+            // PHASE 5
+            // RETURN / FINISH
+            // -----------------------------------------------------
+
+            else if (animationStep <= 52)
+            {
+                if (player1Turn)
+                {
+                    pictureBox2.Left -= 4;
+                }
+                else
+                {
+                    pictureBox1.Left += 4;
+                }
+            }
+
             else
             {
+                pictureBox3.Visible = false;
+                pictureBox4.Visible = false;
+
                 EndAttack();
             }
+        }
+
+
+        // =========================================================
+        // MOVE SPECIAL PROJECTILE
+        // =========================================================
+
+        private void MoveSpecialProjectile()
+        {
+            int startX = projectileStartPosition.X;
+            int startY = projectileStartPosition.Y;
+
+            int targetX = projectileTargetPosition.X;
+            int targetY = projectileTargetPosition.Y;
+
+            float progress =
+                (animationStep - 26) / 20f;
+
+            if (progress > 1)
+                progress = 1;
+
+            int newX =
+                startX +
+                (int)((targetX - startX) * progress);
+
+            int newY =
+                startY +
+                (int)((targetY - startY) * progress);
+
+            pictureBox4.Location =
+                new Point(newX, newY);
         }
 
 
@@ -286,7 +657,8 @@ namespace ElementalGUI
 
             progressBar2.Value = player2HP;
 
-            label5.Text = player2HP + "/100";
+            label5.Text =
+                player2HP + "/100";
 
             label6.Text =
                 player2Character +
@@ -309,7 +681,8 @@ namespace ElementalGUI
 
             progressBar1.Value = player1HP;
 
-            label4.Text = player1HP + "/100";
+            label4.Text =
+                player1HP + "/100";
 
             label6.Text =
                 player1Character +
@@ -327,11 +700,17 @@ namespace ElementalGUI
         {
             animationTimer.Stop();
 
-            // Restore original positions
-            pictureBox1.Location = player1StartPosition;
-            pictureBox2.Location = player2StartPosition;
+            pictureBox3.Visible = false;
+            pictureBox4.Visible = false;
 
-            // Check if someone died
+            // Restore characters
+            pictureBox1.Location =
+                player1StartPosition;
+
+            pictureBox2.Location =
+                player2StartPosition;
+
+            // Check winner
             if (player1HP <= 0)
             {
                 EndBattle(player2Character);
@@ -356,27 +735,6 @@ namespace ElementalGUI
 
 
         // =========================================================
-        // UPDATE TURN
-        // =========================================================
-
-        private void UpdateTurn()
-        {
-            if (player1Turn)
-            {
-                label3.Text =
-                    player1Character.ToUpper() + "'S TURN";
-            }
-            else
-            {
-                label3.Text =
-                    player2Character.ToUpper() + "'S TURN";
-            }
-
-            label6.Text = "Choose your action!";
-        }
-
-
-        // =========================================================
         // DEFEND
         // =========================================================
 
@@ -391,7 +749,8 @@ namespace ElementalGUI
                 : player2Character;
 
             label6.Text =
-                character + " is defending!";
+                character +
+                " is defending!";
 
             player1Turn = !player1Turn;
 
@@ -400,56 +759,26 @@ namespace ElementalGUI
 
 
         // =========================================================
-        // SPECIAL ATTACK
+        // UPDATE TURN
         // =========================================================
 
-        private void button3_Click(object sender, EventArgs e)
+        private void UpdateTurn()
         {
-            if (isAnimating)
-                return;
-
-            isAnimating = true;
-
-            DisableButtons();
-
-            string attacker =
-                player1Turn
-                ? player1Character
-                : player2Character;
-
-            label6.Text =
-                attacker + " used SPECIAL ATTACK!";
-
-            // Special attack = 35 damage
             if (player1Turn)
             {
-                DamagePlayer2(35);
+                label3.Text =
+                    player1Character.ToUpper() +
+                    "'S TURN";
             }
             else
             {
-                DamagePlayer1(35);
+                label3.Text =
+                    player2Character.ToUpper() +
+                    "'S TURN";
             }
 
-            // Check winner
-            if (player1HP <= 0)
-            {
-                EndBattle(player2Character);
-                return;
-            }
-
-            if (player2HP <= 0)
-            {
-                EndBattle(player1Character);
-                return;
-            }
-
-            player1Turn = !player1Turn;
-
-            UpdateTurn();
-
-            isAnimating = false;
-
-            EnableButtons();
+            label6.Text =
+                "Choose your action!";
         }
 
 
@@ -481,12 +810,17 @@ namespace ElementalGUI
         {
             animationTimer.Stop();
 
+            pictureBox3.Visible = false;
+            pictureBox4.Visible = false;
+
             DisableButtons();
 
-            label3.Text = "BATTLE OVER";
+            label3.Text =
+                "BATTLE OVER";
 
             label6.Text =
-                winner.ToUpper() + " WINS!";
+                winner.ToUpper() +
+                " WINS!";
 
             MessageBox.Show(
                 winner + " wins!",
@@ -498,7 +832,7 @@ namespace ElementalGUI
 
 
         // =========================================================
-        // EMPTY DESIGNER EVENTS
+        // DESIGNER EVENTS
         // =========================================================
 
         private void label1_Click(object sender, EventArgs e)
@@ -542,6 +876,10 @@ namespace ElementalGUI
         }
 
         private void pictureBox3_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
         {
         }
 

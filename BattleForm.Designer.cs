@@ -43,9 +43,11 @@
             pictureBox1 = new PictureBox();
             pictureBox2 = new PictureBox();
             pictureBox3 = new PictureBox();
+            pictureBox4 = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             SuspendLayout();
             // 
             // label1
@@ -142,7 +144,6 @@
             label6.Size = new Size(268, 23);
             label6.TabIndex = 7;
             label6.Text = "Character used basic attack!";
-            label6.Click += label6_Click;
             // 
             // button1
             // 
@@ -209,12 +210,22 @@
             // pictureBox3
             // 
             pictureBox3.BackColor = Color.Transparent;
-            pictureBox3.Location = new Point(312, 412);
+            pictureBox3.Location = new Point(312, 382);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(556, 142);
+            pictureBox3.Size = new Size(556, 172);
             pictureBox3.TabIndex = 13;
             pictureBox3.TabStop = false;
             pictureBox3.Click += pictureBox3_Click;
+            // 
+            // pictureBox4
+            // 
+            pictureBox4.BackColor = Color.Transparent;
+            pictureBox4.Location = new Point(274, 346);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(150, 150);
+            pictureBox4.TabIndex = 14;
+            pictureBox4.TabStop = false;
+            pictureBox4.Click += pictureBox4_Click;
             // 
             // BattleForm
             // 
@@ -223,6 +234,7 @@
             BackColor = Color.Black;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1182, 753);
+            Controls.Add(pictureBox4);
             Controls.Add(pictureBox3);
             Controls.Add(pictureBox2);
             Controls.Add(pictureBox1);
@@ -238,13 +250,14 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Font = new Font("Marykate", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
             Name = "BattleForm";
             Text = "BattleForm";
             Load += BattleForm_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -265,5 +278,6 @@
         private PictureBox pictureBox1;
         private PictureBox pictureBox2;
         private PictureBox pictureBox3;
+        private PictureBox pictureBox4;
     }
 }

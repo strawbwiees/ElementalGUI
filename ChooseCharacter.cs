@@ -23,6 +23,7 @@ namespace ElementalGUI
         public ChooseCharacter()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
 
             // Give each character a name
             pictureBox1.Tag = "Lumen";

@@ -17,6 +17,7 @@ namespace ElementalGUI
         public BattleIntro(string player1, string player2)
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
 
             player1Character = player1;
             player2Character = player2;
@@ -88,7 +89,7 @@ namespace ElementalGUI
 
             battleForm.ShowDialog();
 
-            this.Show();
+            this.Close();
         }
 
         private void label1_Click(object sender, EventArgs e)

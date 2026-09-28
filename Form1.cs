@@ -5,6 +5,7 @@ namespace ElementalGUI
         public MainMenu()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void play(object sender, EventArgs e)

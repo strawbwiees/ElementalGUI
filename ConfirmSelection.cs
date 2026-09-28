@@ -19,6 +19,7 @@ namespace ElementalGUI
         public ConfirmSelection(string player1, string player2)
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
 
             // Store the selected characters
             player1Character = player1;
