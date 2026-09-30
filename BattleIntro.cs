@@ -1,10 +1,5 @@
-﻿
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace ElementalGUI
@@ -17,25 +12,38 @@ namespace ElementalGUI
         public BattleIntro(string player1, string player2)
         {
             InitializeComponent();
+
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.Text = "Get Ready!";
+            this.DoubleBuffered = true;
 
             player1Character = player1;
             player2Character = player2;
 
-            // Display character names
             label1.Text = player1Character.ToUpper();
             label2.Text = player2Character.ToUpper();
 
-            // VS
             label3.Text = "VS";
 
-            // Load character images
             LoadCharacterImages();
+
+            this.FormClosing += BattleIntro_FormClosing;
+
+            // both fighters on the shared sprite clock
+            SpriteAnimator.SetSprite(pictureBox1, pictureBox1.Image);
+            SpriteAnimator.SetSprite(pictureBox2, pictureBox2.Image);
+
+            var spriteClock = new System.Windows.Forms.Timer { Interval = 33 };
+            spriteClock.Tick += (s, e) => SpriteAnimator.Tick();
+            spriteClock.Start();
+
+            CartoonUI.StyleButton(button1, CartoonUI.GoldColor);
+            button1.ForeColor = CartoonUI.InkColor;
+            button1.Paint += (s, e) => CartoonUI.DrawButtonOutline(e, button1);
         }
 
         private void LoadCharacterImages()
         {
-            // Player 1
             if (player1Character == "Lumen")
             {
                 pictureBox1.Image = Properties.Resources.fire;
@@ -53,7 +61,6 @@ namespace ElementalGUI
                 pictureBox1.Image = Properties.Resources.wind;
             }
 
-            // Player 2
             if (player2Character == "Lumen")
             {
                 pictureBox2.Image = Properties.Resources.fire;
@@ -71,49 +78,52 @@ namespace ElementalGUI
                 pictureBox2.Image = Properties.Resources.wind;
             }
 
-            // Make images fit their PictureBoxes
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
         }
 
-        // START BATTLE
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object? sender, EventArgs e)
         {
-            BattleForm battleForm =
+            CartoonUI.PlayClick();
+
+            GameFlow.NavigateTo(
                 new BattleForm(
                     player1Character,
                     player2Character
-                );
-
-            this.Hide();
-
-            battleForm.ShowDialog();
-
-            this.Close();
+                )
+            );
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        // X goes back to character select
+        private void BattleIntro_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing && !GameFlow.Navigating)
+            {
+                GameFlow.NavigateTo(new ChooseCharacter());
+            }
+        }
+
+        private void label1_Click(object? sender, EventArgs e)
         {
         }
 
-        private void label2_Click(object sender, EventArgs e)
+        private void label2_Click(object? sender, EventArgs e)
         {
         }
 
-        private void label3_Click(object sender, EventArgs e)
+        private void label3_Click(object? sender, EventArgs e)
         {
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void pictureBox1_Click(object? sender, EventArgs e)
         {
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private void pictureBox2_Click(object? sender, EventArgs e)
         {
         }
 
-        // pictureBox3 is your GAME LOGO.
-        private void pictureBox3_Click(object sender, EventArgs e)
+        private void pictureBox3_Click(object? sender, EventArgs e)
         {
         }
     }

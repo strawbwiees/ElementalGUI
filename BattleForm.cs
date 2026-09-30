@@ -1,17 +1,14 @@
-﻿
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace ElementalGUI
 {
     public partial class BattleForm : Form
     {
-
-        // =========================================================
-        // CHARACTER DATA
-        // =========================================================
-
+        // players, hp, turns
         private string player1Character;
         private string player2Character;
 
@@ -20,54 +17,94 @@ namespace ElementalGUI
 
         private bool player1Turn = true;
 
-        // =========================================================
-        // ANIMATION
-        // =========================================================
+        private bool battleOver = false;
 
-        private System.Windows.Forms.Timer animationTimer;
+        private bool player1Defending = false;
+        private bool player2Defending = false;
 
-        private int animationStep = 0;
+        private int player1Specials = 3;
+        private int player2Specials = 3;
+
+
+        // render clock for sprites + attack anim
+        private const int RenderIntervalMs = 33;
+        private System.Windows.Forms.Timer renderTimer;
+
+        private const int P1 = 0;
+        private const int P2 = 1;
+
+        private readonly Dictionary<int, Fighter> fighters = new();
+
+        private Fighter Attacker => fighters[player1Turn ? P1 : P2];
+        private Fighter Defender => fighters[player1Turn ? P2 : P1];
+
+        private sealed class Fighter
+        {
+            public BufferedPictureBox Box = null!;
+            public Point Home;
+            public int ShakeOffset;
+            public int BobOffset;
+        }
+
+
+        // attack timeline (tick counts) - higher = slower move
+        private const int BasicFlyTicks = 32;
+        private const int BasicHitTick = 33;
+        private const int BasicRecoilEndTick = 41;
+        private const int SpecialWindupEndTick = 36;
+        private const int SpecialFlyStartTick = 37;
+        private const int SpecialFlyEndTick = 68;
+        private const int SpecialHitTick = 69;
+        private const int SpecialRecoilEndTick = 77;
+
+        private const int BasicDamage = 20;
+        private const int SpecialDamage = 35;
 
         private bool isAnimating = false;
+        private bool isSpecial = false;
+        private int attackTick = 0;
+        private int idleTick = 0;
 
-        private string currentAnimation = "";
-
-        private Point player1StartPosition;
-        private Point player2StartPosition;
-
-        // Projectile starting and target positions
         private Point projectileStartPosition;
         private Point projectileTargetPosition;
 
 
-        // =========================================================
-        // CONSTRUCTOR
-        // =========================================================
-
         public BattleForm(string player1, string player2)
         {
             InitializeComponent();
+
+
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.Text = "Elemental Battle";
 
             player1Character = player1;
             player2Character = player2;
 
-            // Remember original character positions
-            player1StartPosition = pictureBox1.Location;
-            player2StartPosition = pictureBox2.Location;
+            // P1 left, P2 right
+            fighters[P1] = new Fighter { Box = pictureBox1 };
+            fighters[P2] = new Fighter { Box = pictureBox2 };
 
-            // Setup animation timer
-            animationTimer = new System.Windows.Forms.Timer();
-            animationTimer.Interval = 20;
-            animationTimer.Tick += AnimationTimer_Tick;
+            foreach (var fighter in fighters.Values)
+            {
+                fighter.Home = fighter.Box.Location;
+            }
+
+            renderTimer = new System.Windows.Forms.Timer();
+            renderTimer.Interval = RenderIntervalMs;
+            renderTimer.Tick += RenderTick;
+
+            this.FormClosing += (s, e) =>
+            {
+                renderTimer.Stop();
+
+                if (e.CloseReason == CloseReason.UserClosing && !battleOver && !GameFlow.Navigating)
+                {
+                    GameFlow.NavigateTo(new ChooseCharacter());
+                }
+            };
 
             SetupBattle();
         }
-
-
-        // =========================================================
-        // SETUP BATTLE
-        // =========================================================
 
         private void SetupBattle()
         {
@@ -76,53 +113,37 @@ namespace ElementalGUI
 
             label3.Text = player1Character.ToUpper() + "'S TURN";
 
-            // HP
             player1HP = 100;
             player2HP = 100;
 
-            progressBar1.Maximum = 100;
-            progressBar2.Maximum = 100;
-
-            progressBar1.Value = 100;
-            progressBar2.Value = 100;
+            // reset hp bars + labels
+            CartoonUI.SetHpBar(hpBar1, 100, 100);
+            CartoonUI.SetHpBar(hpBar2, 100, 100);
 
             label4.Text = "100/100";
             label5.Text = "100/100";
 
             label6.Text = "Choose your action!";
 
-            // Load characters
-            LoadCharacterImages();
-
-            // -----------------------------------------------------
-            // ATTACK EFFECT PICTURE BOXES
-            // -----------------------------------------------------
-
-            // PB3 = SPECIAL ATTACK EFFECT
-            pictureBox3.Visible = false;
-            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-
-            // PB4 = PROJECTILE
-            pictureBox4.Visible = false;
-            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
-        }
-
-
-        // =========================================================
-        // CHARACTER IMAGES
-        // =========================================================
-
-        private void LoadCharacterImages()
-        {
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
 
-            pictureBox1.Image = GetCharacterImage(player1Character);
-            pictureBox2.Image = GetCharacterImage(player2Character);
+            SpriteAnimator.SetSprite(pictureBox1, GetCharacterImage(player1Character));
+            SpriteAnimator.SetSprite(pictureBox2, GetCharacterImage(player2Character));
+
+            pictureBox3.Visible = false;
+            pictureBox4.Visible = false;
+
+            UpdateSpecialButton();
+
+            renderTimer.Start();
         }
 
 
-        private Image GetCharacterImage(string character)
+
+        private Image? GetCharacterImage(string character)
         {
             if (character == "Lumen")
             {
@@ -148,52 +169,96 @@ namespace ElementalGUI
         }
 
 
-        // =========================================================
-        // BASIC ATTACK BUTTON
-        // =========================================================
 
         private void button1_Click(object sender, EventArgs e)
         {
             if (isAnimating)
                 return;
 
-            BasicAttack();
+            BeginAttack(isSpecial: false);
         }
 
 
-        // =========================================================
-        // BASIC ATTACK
-        // PB4 = PROJECTILE
-        // =========================================================
 
-        private void BasicAttack()
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (isAnimating)
+                return;
+
+            if (GetSpecialUses() <= 0)
+            {
+                CartoonUI.PlayBlock();
+                label6.Text = "No specials left!";
+                return;
+            }
+
+            UseSpecial();
+            BeginAttack(isSpecial: true);
+        }
+
+        private int GetSpecialUses()
+        {
+            return player1Turn ? player1Specials : player2Specials;
+        }
+
+        private void UseSpecial()
+        {
+            if (player1Turn) player1Specials--;
+            else player2Specials--;
+        }
+
+        private void UpdateSpecialButton()
+        {
+            button3.Text = "SPECIAL (" + GetSpecialUses() + ")";
+        }
+
+
+
+        // kicks off the attack anim
+        private void BeginAttack(bool isSpecial)
         {
             isAnimating = true;
+            this.isSpecial = isSpecial;
+            attackTick = 0;
 
             DisableButtons();
-
-            currentAnimation = "BASIC";
-
-            animationStep = 0;
 
             string attacker =
                 player1Turn
                 ? player1Character
                 : player2Character;
 
-            label6.Text =
-                attacker + " used BASIC ATTACK!";
+            Image? projectile;
 
-            // Load projectile
-            pictureBox4.Image =
-                GetBasicAttackImage(attacker);
+            if (isSpecial)
+            {
+                label6.Text = attacker + " used SPECIAL ATTACK!";
 
-            pictureBox4.Visible = true;
+                pictureBox3.Image = GetSpecialAttackImage(attacker);
+                pictureBox3.Visible = true;
 
-            // -----------------------------------------------------
-            // PLAYER 1 ATTACKING
-            // -----------------------------------------------------
+                projectile = GetSpecialProjectileImage(attacker);
+                pictureBox4.Visible = false;
+            }
+            else
+            {
+                label6.Text = attacker + " used BASIC ATTACK!";
 
+                projectile = GetBasicAttackImage(attacker);
+                pictureBox4.Visible = true;
+            }
+
+            SpriteAnimator.SetSprite(pictureBox4, projectile);
+
+            // where the shot starts and where it lands
+            ComputeProjectilePath();
+            pictureBox4.Location = projectileStartPosition;
+        }
+
+
+
+        private void ComputeProjectilePath()
+        {
             if (player1Turn)
             {
                 projectileStartPosition = new Point(
@@ -206,11 +271,6 @@ namespace ElementalGUI
                     pictureBox2.Top + pictureBox2.Height / 2 - 50
                 );
             }
-
-            // -----------------------------------------------------
-            // PLAYER 2 ATTACKING
-            // -----------------------------------------------------
-
             else
             {
                 projectileStartPosition = new Point(
@@ -223,18 +283,10 @@ namespace ElementalGUI
                     pictureBox1.Top + pictureBox1.Height / 2 - 50
                 );
             }
-
-            pictureBox4.Location = projectileStartPosition;
-
-            animationTimer.Start();
         }
 
 
-        // =========================================================
-        // BASIC ATTACK IMAGE
-        // =========================================================
-
-        private Image GetBasicAttackImage(string character)
+        private Image? GetBasicAttackImage(string character)
         {
             if (character == "Lumen")
             {
@@ -260,182 +312,7 @@ namespace ElementalGUI
         }
 
 
-        // =========================================================
-        // ANIMATION TIMER
-        // =========================================================
-
-        private void AnimationTimer_Tick(object sender, EventArgs e)
-        {
-            animationStep++;
-
-            if (currentAnimation == "BASIC")
-            {
-                AnimateBasicAttack();
-            }
-
-            else if (currentAnimation == "SPECIAL")
-            {
-                AnimateSpecialAttack();
-            }
-        }
-
-
-        // =========================================================
-        // BASIC ATTACK ANIMATION
-        // =========================================================
-
-        private void AnimateBasicAttack()
-        {
-            // -----------------------------------------------------
-            // MOVE PROJECTILE
-            // -----------------------------------------------------
-
-            if (animationStep <= 20)
-            {
-                MoveProjectile();
-            }
-
-            // -----------------------------------------------------
-            // HIT
-            // -----------------------------------------------------
-
-            else if (animationStep == 21)
-            {
-                pictureBox4.Visible = false;
-
-                if (player1Turn)
-                {
-                    DamagePlayer2(20);
-
-                    // Enemy shake
-                    pictureBox2.Left += 15;
-                }
-                else
-                {
-                    DamagePlayer1(20);
-
-                    // Enemy shake
-                    pictureBox1.Left -= 15;
-                }
-            }
-
-            // -----------------------------------------------------
-            // RESET
-            // -----------------------------------------------------
-
-            else if (animationStep <= 26)
-            {
-                if (player1Turn)
-                {
-                    pictureBox2.Left -= 3;
-                }
-                else
-                {
-                    pictureBox1.Left += 3;
-                }
-            }
-
-            else
-            {
-                EndAttack();
-            }
-        }
-
-
-        // =========================================================
-        // MOVE PROJECTILE
-        // =========================================================
-
-        private void MoveProjectile()
-        {
-            int startX = projectileStartPosition.X;
-            int startY = projectileStartPosition.Y;
-
-            int targetX = projectileTargetPosition.X;
-            int targetY = projectileTargetPosition.Y;
-
-            float progress =
-                animationStep / 20f;
-
-            int newX =
-                startX +
-                (int)((targetX - startX) * progress);
-
-            int newY =
-                startY +
-                (int)((targetY - startY) * progress);
-
-            pictureBox4.Location =
-                new Point(newX, newY);
-        }
-
-
-        // =========================================================
-        // SPECIAL ATTACK BUTTON
-        // =========================================================
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            if (isAnimating)
-                return;
-
-            SpecialAttack();
-        }
-
-
-        // =========================================================
-        // SPECIAL ATTACK
-        //
-        // PB3 = LARGE SPECIAL EFFECT
-        // PB4 = PROJECTILE
-        // =========================================================
-
-        private void SpecialAttack()
-        {
-            isAnimating = true;
-
-            DisableButtons();
-
-            currentAnimation = "SPECIAL";
-
-            animationStep = 0;
-
-            string attacker =
-                player1Turn
-                ? player1Character
-                : player2Character;
-
-            label6.Text =
-                attacker + " used SPECIAL ATTACK!";
-
-            // -----------------------------------------------------
-            // LOAD SPECIAL EFFECT
-            // -----------------------------------------------------
-
-            pictureBox3.Image =
-                GetSpecialAttackImage(attacker);
-
-            pictureBox3.Visible = true;
-
-            // -----------------------------------------------------
-            // LOAD PROJECTILE
-            // -----------------------------------------------------
-
-            pictureBox4.Image =
-                GetSpecialProjectileImage(attacker);
-
-            pictureBox4.Visible = false;
-
-            animationTimer.Start();
-        }
-
-
-        // =========================================================
-        // SPECIAL ATTACK BACKGROUND EFFECT
-        // PB3
-        // =========================================================
-
-        private Image GetSpecialAttackImage(string character)
+        private Image? GetSpecialAttackImage(string character)
         {
             if (character == "Lumen")
             {
@@ -461,12 +338,7 @@ namespace ElementalGUI
         }
 
 
-        // =========================================================
-        // SPECIAL PROJECTILE
-        // PB4
-        // =========================================================
-
-        private Image GetSpecialProjectileImage(string character)
+        private Image? GetSpecialProjectileImage(string character)
         {
             if (character == "Lumen")
             {
@@ -492,227 +364,201 @@ namespace ElementalGUI
         }
 
 
-        // =========================================================
-        // SPECIAL ATTACK ANIMATION
-        // =========================================================
 
-        private void AnimateSpecialAttack()
+        // single clock: sprites, idle bob, attack anim
+        private void RenderTick(object? sender, EventArgs e)
         {
-            // -----------------------------------------------------
-            // PHASE 1
-            // SPECIAL EFFECT APPEARS
-            // -----------------------------------------------------
+            SpriteAnimator.Tick();
 
-            if (animationStep <= 25)
+            if (isAnimating)
             {
-                // Keep special effect visible
-                pictureBox3.Visible = true;
+                RunAttackTimeline();
             }
-
-            // -----------------------------------------------------
-            // PHASE 2
-            // PROJECTILE STARTS
-            // -----------------------------------------------------
-
-            else if (animationStep == 26)
-            {
-                pictureBox3.Visible = false;
-
-                pictureBox4.Visible = true;
-
-                if (player1Turn)
-                {
-                    projectileStartPosition = new Point(
-                        pictureBox1.Right - 30,
-                        pictureBox1.Top +
-                        pictureBox1.Height / 2 - 50
-                    );
-
-                    projectileTargetPosition = new Point(
-                        pictureBox2.Left,
-                        pictureBox2.Top +
-                        pictureBox2.Height / 2 - 50
-                    );
-                }
-                else
-                {
-                    projectileStartPosition = new Point(
-                        pictureBox2.Left - 100,
-                        pictureBox2.Top +
-                        pictureBox2.Height / 2 - 50
-                    );
-
-                    projectileTargetPosition = new Point(
-                        pictureBox1.Right - 30,
-                        pictureBox1.Top +
-                        pictureBox1.Height / 2 - 50
-                    );
-                }
-
-                pictureBox4.Location =
-                    projectileStartPosition;
-            }
-
-            // -----------------------------------------------------
-            // PHASE 3
-            // PROJECTILE MOVES
-            // -----------------------------------------------------
-
-            else if (animationStep <= 46)
-            {
-                MoveSpecialProjectile();
-            }
-
-            // -----------------------------------------------------
-            // PHASE 4
-            // HIT
-            // -----------------------------------------------------
-
-            else if (animationStep == 47)
-            {
-                pictureBox4.Visible = false;
-
-                if (player1Turn)
-                {
-                    DamagePlayer2(35);
-
-                    pictureBox2.Left += 20;
-                }
-                else
-                {
-                    DamagePlayer1(35);
-
-                    pictureBox1.Left -= 20;
-                }
-            }
-
-            // -----------------------------------------------------
-            // PHASE 5
-            // RETURN / FINISH
-            // -----------------------------------------------------
-
-            else if (animationStep <= 52)
-            {
-                if (player1Turn)
-                {
-                    pictureBox2.Left -= 4;
-                }
-                else
-                {
-                    pictureBox1.Left += 4;
-                }
-            }
-
             else
             {
-                pictureBox3.Visible = false;
-                pictureBox4.Visible = false;
+                idleTick++;
 
-                EndAttack();
+                // half-second bob cycle
+                fighters[P1].BobOffset = (idleTick % 16 < 8) ? -4 : 2;
+                fighters[P2].BobOffset = (idleTick % 16 < 8) ? 4 : -2;
+            }
+
+            ApplyFighterVisuals();
+        }
+
+        // home pos + shake + bob
+        private void ApplyFighterVisuals()
+        {
+            foreach (var fighter in fighters.Values)
+            {
+                fighter.Box.Location = new Point(
+                    fighter.Home.X + fighter.ShakeOffset,
+                    fighter.Home.Y + fighter.BobOffset
+                );
             }
         }
 
 
-        // =========================================================
-        // MOVE SPECIAL PROJECTILE
-        // =========================================================
 
-        private void MoveSpecialProjectile()
+        // fly -> hit -> recoil -> done
+        private void RunAttackTimeline()
         {
-            int startX = projectileStartPosition.X;
-            int startY = projectileStartPosition.Y;
+            attackTick++;
 
-            int targetX = projectileTargetPosition.X;
-            int targetY = projectileTargetPosition.Y;
+            int flyTicks = isSpecial ? SpecialFlyEndTick - SpecialFlyStartTick
+                                     : BasicFlyTicks;
+            int hitTick = isSpecial ? SpecialHitTick : BasicHitTick;
 
-            float progress =
-                (animationStep - 26) / 20f;
 
-            if (progress > 1)
-                progress = 1;
+            // special windup: effect covers the screen first
+            if (isSpecial && attackTick <= SpecialWindupEndTick)
+            {
+                return;
+            }
 
-            int newX =
-                startX +
-                (int)((targetX - startX) * progress);
 
-            int newY =
-                startY +
-                (int)((targetY - startY) * progress);
+            if (attackTick <= hitTick - 1)
+            {
+                int flown = isSpecial
+                    ? attackTick - SpecialFlyStartTick
+                    : attackTick;
 
-            pictureBox4.Location =
-                new Point(newX, newY);
+                if (isSpecial && attackTick == SpecialFlyStartTick)
+                {
+                    pictureBox3.Visible = false;
+                    pictureBox4.Visible = true;
+                }
+
+                float progress = Math.Min(1f, flown / (float)flyTicks);
+
+                pictureBox4.Location = new Point(
+                    projectileStartPosition.X +
+                        (int)((projectileTargetPosition.X - projectileStartPosition.X) * progress),
+                    projectileStartPosition.Y +
+                        (int)((projectileTargetPosition.Y - projectileStartPosition.Y) * progress)
+                );
+
+                return;
+            }
+
+
+            // hit lands: damage + knockback
+            if (attackTick == hitTick)
+            {
+                pictureBox4.Visible = false;
+
+                bool hitPlayer2 = player1Turn;
+                int damage = isSpecial ? SpecialDamage : BasicDamage;
+                int knockback = isSpecial ? 20 : 15;
+
+                ApplyDamage(hitPlayer2, damage);
+
+                Defender.ShakeOffset = Defender == fighters[P2] ? knockback : -knockback;
+
+                return;
+            }
+
+
+            int recoilEnd = isSpecial ? SpecialRecoilEndTick : BasicRecoilEndTick;
+            int recoilStep = isSpecial ? 3 : 2;
+
+            if (attackTick <= recoilEnd)
+            {
+                // settle back gently
+                Defender.ShakeOffset += Defender == fighters[P2] ? -recoilStep : recoilStep;
+
+                return;
+            }
+
+
+            EndAttack();
         }
 
 
-        // =========================================================
-        // DAMAGE PLAYER 2
-        // =========================================================
 
-        private void DamagePlayer2(int damage)
+        private async void ScreenShake(int intensity)
         {
-            player2HP -= damage;
+            Point original = this.Location;
+            Random rand = new Random();
 
-            if (player2HP < 0)
-                player2HP = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                int dx = rand.Next(-intensity, intensity + 1);
+                int dy = rand.Next(-intensity, intensity + 1);
+                this.Location = new Point(original.X + dx, original.Y + dy);
+                await System.Threading.Tasks.Task.Delay(25);
+            }
 
-            progressBar2.Value = player2HP;
-
-            label5.Text =
-                player2HP + "/100";
-
-            label6.Text =
-                player2Character +
-                " took " +
-                damage +
-                " damage!";
+            this.Location = original;
         }
 
 
-        // =========================================================
-        // DAMAGE PLAYER 1
-        // =========================================================
 
-        private void DamagePlayer1(int damage)
+        // guard halves the hit, else hp drops
+        private void ApplyDamage(bool toPlayer2, int damage)
         {
-            player1HP -= damage;
+            bool defending = toPlayer2 ? player2Defending : player1Defending;
+            string targetName = toPlayer2 ? player2Character : player1Character;
+            var targetPb = (toPlayer2 ? fighters[P2] : fighters[P1]).Box;
+            int impactX = targetPb.Left + targetPb.Width / 2;
+            int impactY = targetPb.Top + targetPb.Height / 3;
 
-            if (player1HP < 0)
-                player1HP = 0;
+            if (defending)
+            {
+                CartoonUI.PlayBlock();
 
-            progressBar1.Value = player1HP;
+                // guard breaks after one hit
+                if (toPlayer2) player2Defending = false;
+                else player1Defending = false;
 
-            label4.Text =
-                player1HP + "/100";
+                var _ = CartoonUI.ShowBurstAsync(this, new Point(impactX, impactY), "BLOCKED!", Color.SkyBlue);
 
-            label6.Text =
-                player1Character +
-                " took " +
-                damage +
-                " damage!";
+                label6.Text = targetName + " blocked the attack!";
+            }
+            else
+            {
+                CartoonUI.PlayPunch();
+
+                if (toPlayer2)
+                {
+                    player2HP = Math.Max(0, player2HP - damage);
+                    CartoonUI.SetHpBar(hpBar2, player2HP, 100);
+                    label5.Text = player2HP + "/100";
+                }
+                else
+                {
+                    player1HP = Math.Max(0, player1HP - damage);
+                    CartoonUI.SetHpBar(hpBar1, player1HP, 100);
+                    label4.Text = player1HP + "/100";
+                }
+
+                var _ = CartoonUI.ShowBurstAsync(this, new Point(impactX, impactY), "POW!", CartoonUI.BadColor);
+
+                label6.Text = targetName + " took " + damage + " damage!";
+            }
+
+            ScreenShake(defending ? 3 : 6);
         }
 
 
-        // =========================================================
-        // END ATTACK
-        // =========================================================
 
+        // cleanup, then next turn (or game over)
         private void EndAttack()
         {
-            animationTimer.Stop();
-
             pictureBox3.Visible = false;
             pictureBox4.Visible = false;
 
-            // Restore characters
-            pictureBox1.Location =
-                player1StartPosition;
+            foreach (var fighter in fighters.Values)
+            {
+                fighter.ShakeOffset = 0;
+                fighter.BobOffset = 0;
+            }
 
-            pictureBox2.Location =
-                player2StartPosition;
+            ApplyFighterVisuals();
 
-            // Check winner
             if (player1HP <= 0)
             {
+                // someone's down
                 EndBattle(player2Character);
                 return;
             }
@@ -723,7 +569,6 @@ namespace ElementalGUI
                 return;
             }
 
-            // Change turn
             player1Turn = !player1Turn;
 
             UpdateTurn();
@@ -734,10 +579,8 @@ namespace ElementalGUI
         }
 
 
-        // =========================================================
-        // DEFEND
-        // =========================================================
 
+        // guard: halves next hit taken, ends your turn
         private void button2_Click(object sender, EventArgs e)
         {
             if (isAnimating)
@@ -748,9 +591,14 @@ namespace ElementalGUI
                 ? player1Character
                 : player2Character;
 
+            if (player1Turn) player1Defending = true;
+            else player2Defending = true;
+
+            CartoonUI.PlayBlock();
+
             label6.Text =
                 character +
-                " is defending!";
+                " raises a guard! (next hit -50%)";
 
             player1Turn = !player1Turn;
 
@@ -758,9 +606,6 @@ namespace ElementalGUI
         }
 
 
-        // =========================================================
-        // UPDATE TURN
-        // =========================================================
 
         private void UpdateTurn()
         {
@@ -777,14 +622,13 @@ namespace ElementalGUI
                     "'S TURN";
             }
 
+            UpdateSpecialButton();
+
             label6.Text =
                 "Choose your action!";
         }
 
 
-        // =========================================================
-        // BUTTON CONTROL
-        // =========================================================
 
         private void DisableButtons()
         {
@@ -798,17 +642,17 @@ namespace ElementalGUI
         {
             button1.Enabled = true;
             button2.Enabled = true;
-            button3.Enabled = true;
+            button3.Enabled = GetSpecialUses() > 0;
         }
 
 
-        // =========================================================
-        // END BATTLE
-        // =========================================================
 
+        // show winner, then rematch or quit
         private void EndBattle(string winner)
         {
-            animationTimer.Stop();
+            renderTimer.Stop();
+
+            battleOver = true;
 
             pictureBox3.Visible = false;
             pictureBox4.Visible = false;
@@ -822,69 +666,49 @@ namespace ElementalGUI
                 winner.ToUpper() +
                 " WINS!";
 
+            CartoonUI.PlayWin();
+
+            var _ = CartoonUI.ShowBurstAsync(
+                this,
+                new Point(this.ClientSize.Width / 2, this.ClientSize.Height / 3),
+                "K.O.!",
+                CartoonUI.GoldColor);
+
             MessageBox.Show(
                 winner + " wins!",
                 "Battle Finished",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
+
+            var result = MessageBox.Show(
+                "Play again?",
+                "Rematch",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                GameFlow.NavigateTo(new ChooseCharacter());
+            }
+            else
+            {
+                Application.Exit();
+            }
         }
 
 
-        // =========================================================
-        // DESIGNER EVENTS
-        // =========================================================
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void label2_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void label3_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void progressBar1_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void progressBar2_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void label4_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void BattleForm_Load(object sender, EventArgs e)
-        {
-        }
 
-        private void label5_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void pictureBox3_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void pictureBox4_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void label6_Click(object sender, EventArgs e)
-        {
-        }
     }
 }

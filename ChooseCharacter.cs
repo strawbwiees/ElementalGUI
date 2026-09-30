@@ -1,58 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
+
 
 namespace ElementalGUI
 {
     public partial class ChooseCharacter : Form
     {
-        // Stores the character currently selected
-        private PictureBox selectedCharacter = null;
+        // currently highlighted card
+        private PictureBox? selectedCharacter = null;
 
-        // Stores the characters chosen by each player
         private string player1Character = "";
         private string player2Character = "";
 
-        // Keeps track of whose turn it is
+        // picks per player + whose turn to choose
         private int currentPlayer = 1;
 
         public ChooseCharacter()
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterScreen;
 
-            // Give each character a name
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.Text = "Choose Your Character";
+            this.DoubleBuffered = true;
+
             pictureBox1.Tag = "Lumen";
             pictureBox2.Tag = "Ripple";
             pictureBox3.Tag = "Grunch";
             pictureBox4.Tag = "Gale";
 
-            // Make the characters clickable
             pictureBox1.Click += Character_Click;
             pictureBox2.Click += Character_Click;
             pictureBox3.Click += Character_Click;
             pictureBox4.Click += Character_Click;
 
-            // Allow us to draw the selection outline
+            // sprites first so the ring paints on top
+            SpriteAnimator.SetSprite(pictureBox1, pictureBox1.Image);
+            SpriteAnimator.SetSprite(pictureBox2, pictureBox2.Image);
+            SpriteAnimator.SetSprite(pictureBox3, pictureBox3.Image);
+            SpriteAnimator.SetSprite(pictureBox4, pictureBox4.Image);
+
+            var spriteClock = new System.Windows.Forms.Timer { Interval = 33 };
+            spriteClock.Tick += (s, e) => SpriteAnimator.Tick();
+            spriteClock.Start();
+
             pictureBox1.Paint += Character_Paint;
             pictureBox2.Paint += Character_Paint;
             pictureBox3.Paint += Character_Paint;
             pictureBox4.Paint += Character_Paint;
 
-            // DO NOT add:
-            // button1.Click += btnSelect_Click;
-            //
-            // The button is already connected to button1_Click
-            // through the Designer.
+            CartoonUI.StyleButton(button1, CartoonUI.GoodColor);
+            button1.Paint += (s, e) => CartoonUI.DrawButtonOutline(e, button1);
+
+            label2.ForeColor = Color.FromArgb(126, 187, 255);
+
+            this.FormClosing += (s, e) =>
+            {
+                if (e.CloseReason == CloseReason.UserClosing && !GameFlow.Navigating)
+                {
+                    GameFlow.ShowMenu();
+                }
+            };
         }
 
-        // Runs whenever a character is clicked
-        private void Character_Click(object sender, EventArgs e)
+        private void Character_Click(object? sender, EventArgs e)
         {
+            CartoonUI.PlayClick();
+
             selectedCharacter = sender as PictureBox;
 
             pictureBox1.Invalidate();
@@ -61,63 +75,64 @@ namespace ElementalGUI
             pictureBox4.Invalidate();
         }
 
-        // Draws the outline around the selected character
-        private void Character_Paint(object sender, PaintEventArgs e)
+        // selection ring in the current player's color
+        private void Character_Paint(object? sender, PaintEventArgs e)
         {
-            PictureBox pictureBox = sender as PictureBox;
+            PictureBox pictureBox = (PictureBox)sender!;
 
             if (pictureBox == selectedCharacter)
             {
-                using (Pen pen = new Pen(Color.White, 5))
+                Color ring = currentPlayer == 1
+                    ? Color.FromArgb(74, 144, 217)   // Player 1 blue
+                    : CartoonUI.BadColor;            // Player 2 red
+
+                using (Pen pen = new Pen(ring, 6))
                 {
                     e.Graphics.DrawRectangle(
                         pen,
-                        2,
-                        2,
-                        pictureBox.Width - 5,
-                        pictureBox.Height - 5
+                        3,
+                        3,
+                        pictureBox.Width - 7,
+                        pictureBox.Height - 7
                     );
                 }
             }
         }
 
-        // SELECT BUTTON
+        // lock in the pick, then hand off to player 2
         private void button1_Click(object sender, EventArgs e)
         {
-            // Make sure a character was selected
             if (selectedCharacter == null)
             {
+                CartoonUI.PlayBlock();
                 MessageBox.Show("Please choose a character first.");
                 return;
             }
 
-            // PLAYER 1
             if (currentPlayer == 1)
             {
-                player1Character = selectedCharacter.Tag.ToString();
+                player1Character = selectedCharacter.Tag!.ToString()!;
 
                 currentPlayer = 2;
 
                 PreparePlayer2();
             }
-            // PLAYER 2
             else
             {
-                player2Character = selectedCharacter.Tag.ToString();
+                player2Character = selectedCharacter.Tag!.ToString()!;
 
                 StartGame();
             }
         }
 
-        // Change to Player 2
+        // player 2 can't take player 1's pick
         private void PreparePlayer2()
         {
             label2.Text = "PLAYER 2";
+            label2.ForeColor = CartoonUI.BadColor;
 
-            // Clear current selection
             selectedCharacter = null;
 
-            // Prevent Player 2 from choosing Player 1's character
             pictureBox1.Enabled = player1Character != "Lumen";
             pictureBox2.Enabled = player1Character != "Ripple";
             pictureBox3.Enabled = player1Character != "Grunch";
@@ -129,7 +144,6 @@ namespace ElementalGUI
             pictureBox4.Invalidate();
         }
 
-        // Open confirmation after Player 2 selects
         private void StartGame()
         {
             ConfirmSelection confirmation =
@@ -140,36 +154,30 @@ namespace ElementalGUI
 
             confirmation.ShowDialog(this);
 
-            // Only continue if CONFIRM was clicked
             if (confirmation.Confirmed)
             {
-                BattleIntro battleIntro =
+                GameFlow.NavigateTo(
                     new BattleIntro(
                         player1Character,
                         player2Character
-                    );
-
-                this.Hide();
-
-                battleIntro.ShowDialog();
-
-                this.Show();
+                    )
+                );
             }
         }
 
-        private void label2_Click(object sender, EventArgs e)
+        private void label2_Click(object? sender, EventArgs e)
         {
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void label1_Click(object? sender, EventArgs e)
         {
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private void pictureBox2_Click(object? sender, EventArgs e)
         {
         }
 
-        private void pictureBox4_Click(object sender, EventArgs e)
+        private void pictureBox4_Click(object? sender, EventArgs e)
         {
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace ElementalGUI
+namespace ElementalGUI
 {
     partial class ConfirmSelection
     {
@@ -37,104 +37,116 @@
             button2 = new Button();
             label6 = new Label();
             SuspendLayout();
-            // 
+            //
             // button1
-            // 
-            button1.BackColor = Color.Red;
-            button1.FlatStyle = FlatStyle.Popup;
-            button1.ForeColor = SystemColors.Window;
+            //
+            button1.BackColor = CartoonUI.BadColor;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Comic Sans MS", 13.8F, FontStyle.Bold);
+            button1.ForeColor = Color.White;
             button1.Location = new Point(93, 320);
             button1.Name = "button1";
-            button1.Size = new Size(117, 31);
+            button1.Size = new Size(140, 45);
             button1.TabIndex = 0;
             button1.Text = "CANCEL";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
-            // 
+            //
             // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(149, 29);
+            //
+            label1.AutoSize = false;
+            label1.Font = new Font("Comic Sans MS", 18F, FontStyle.Bold);
+            label1.ForeColor = CartoonUI.HighlightColor;
+            label1.Location = new Point(51, 29);
             label1.Name = "label1";
-            label1.Size = new Size(196, 23);
+            label1.Size = new Size(400, 45);
             label1.TabIndex = 1;
             label1.Text = "CONFIRM SELECTION";
+            label1.TextAlign = ContentAlignment.MiddleCenter;
             label1.Click += label1_Click;
-            // 
+            //
             // label2
-            // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label2.Location = new Point(128, 118);
+            //
+            label2.AutoSize = false;
+            label2.Font = new Font("Comic Sans MS", 15F, FontStyle.Bold);
+            label2.ForeColor = Color.FromArgb(126, 187, 255);
+            label2.Location = new Point(78, 110);
             label2.Name = "label2";
-            label2.Size = new Size(98, 23);
+            label2.Size = new Size(150, 35);
             label2.TabIndex = 2;
             label2.Text = "PLAYER 1:";
+            label2.TextAlign = ContentAlignment.MiddleLeft;
             label2.Click += label2_Click;
-            // 
+            //
             // label3
-            // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label3.Location = new Point(128, 176);
+            //
+            label3.AutoSize = false;
+            label3.Font = new Font("Comic Sans MS", 15F, FontStyle.Bold);
+            label3.ForeColor = CartoonUI.BadColor;
+            label3.Location = new Point(78, 170);
             label3.Name = "label3";
-            label3.Size = new Size(99, 23);
+            label3.Size = new Size(150, 35);
             label3.TabIndex = 3;
             label3.Text = "PLAYER 2:";
+            label3.TextAlign = ContentAlignment.MiddleLeft;
             label3.Click += label3_Click;
-            // 
+            //
             // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label4.Location = new Point(258, 118);
+            //
+            label4.AutoSize = false;
+            label4.Font = new Font("Comic Sans MS", 15F, FontStyle.Bold);
+            label4.ForeColor = Color.White;
+            label4.Location = new Point(240, 110);
             label4.Name = "label4";
-            label4.Size = new Size(113, 23);
+            label4.Size = new Size(220, 35);
             label4.TabIndex = 4;
             label4.Text = "CHARACTER";
+            label4.TextAlign = ContentAlignment.MiddleLeft;
             label4.Click += label4_Click;
-            // 
+            //
             // label5
-            // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label5.Location = new Point(258, 176);
+            //
+            label5.AutoSize = false;
+            label5.Font = new Font("Comic Sans MS", 15F, FontStyle.Bold);
+            label5.ForeColor = Color.White;
+            label5.Location = new Point(240, 170);
             label5.Name = "label5";
-            label5.Size = new Size(113, 23);
+            label5.Size = new Size(220, 35);
             label5.TabIndex = 5;
             label5.Text = "CHARACTER";
+            label5.TextAlign = ContentAlignment.MiddleLeft;
             label5.Click += label5_Click;
-            // 
+            //
             // button2
-            // 
-            button2.BackColor = SystemColors.ActiveCaption;
-            button2.FlatStyle = FlatStyle.Popup;
-            button2.ForeColor = Color.Black;
-            button2.Location = new Point(267, 320);
+            //
+            button2.BackColor = CartoonUI.GoodColor;
+            button2.FlatStyle = FlatStyle.Flat;
+            button2.Font = new Font("Comic Sans MS", 13.8F, FontStyle.Bold);
+            button2.ForeColor = Color.White;
+            button2.Location = new Point(270, 320);
             button2.Name = "button2";
-            button2.Size = new Size(117, 31);
+            button2.Size = new Size(140, 45);
             button2.TabIndex = 6;
             button2.Text = "CONFIRM";
             button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
-            // 
+            //
             // label6
-            // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label6.Location = new Point(176, 260);
+            //
+            label6.AutoSize = false;
+            label6.Font = new Font("Comic Sans MS", 14F, FontStyle.Bold);
+            label6.ForeColor = Color.White;
+            label6.Location = new Point(151, 250);
             label6.Name = "label6";
-            label6.Size = new Size(147, 23);
+            label6.Size = new Size(200, 35);
             label6.TabIndex = 7;
             label6.Text = "Are you ready?";
+            label6.TextAlign = ContentAlignment.MiddleCenter;
             label6.Click += label6_Click;
-            // 
+            //
             // ConfirmSelection
-            // 
-            AutoScaleDimensions = new SizeF(10F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = SystemColors.ActiveCaptionText;
+            //
+            BackColor = CartoonUI.PanelColor;
             ClientSize = new Size(503, 406);
             Controls.Add(label6);
             Controls.Add(button2);
@@ -144,14 +156,10 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(button1);
-            Font = new Font("Marykate", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ForeColor = Color.White;
-            Margin = new Padding(4, 3, 4, 3);
             Name = "ConfirmSelection";
-            Text = "ConfirmSelection";
+            Text = "Confirm Selection";
             Load += ConfirmSelection_Load;
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion

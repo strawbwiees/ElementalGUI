@@ -1,10 +1,5 @@
-﻿
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace ElementalGUI
@@ -14,6 +9,8 @@ namespace ElementalGUI
         private string player1Character;
         private string player2Character;
 
+        // set when the player hits CONFIRM
+
         public bool Confirmed { get; private set; } = false;
 
         public ConfirmSelection(string player1, string player2)
@@ -21,39 +18,38 @@ namespace ElementalGUI
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // Store the selected characters
             player1Character = player1;
             player2Character = player2;
 
-            // Title
             label1.Text = "CONFIRM SELECTION";
 
-            // Players
             label2.Text = "PLAYER 1";
             label3.Text = "PLAYER 2";
 
-            // Characters
             label4.Text = player1Character.ToUpper();
             label5.Text = player2Character.ToUpper();
 
-            // Question
             label6.Text = "Are you ready?";
 
-            // Buttons
             button1.Text = "CANCEL";
             button2.Text = "CONFIRM";
+
+            CartoonUI.StyleButton(button1, CartoonUI.BadColor);
+            CartoonUI.StyleButton(button2, CartoonUI.GoodColor);
+            button1.Paint += (s, e) => CartoonUI.DrawButtonOutline(e, button1);
+            button2.Paint += (s, e) => CartoonUI.DrawButtonOutline(e, button2);
         }
 
-        // CANCEL
         private void button1_Click(object sender, EventArgs e)
         {
+            CartoonUI.PlayClick();
             Confirmed = false;
             this.Close();
         }
 
-        // CONFIRM
         private void button2_Click(object sender, EventArgs e)
         {
+            CartoonUI.PlayClick();
             Confirmed = true;
             this.Close();
         }

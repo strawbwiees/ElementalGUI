@@ -5,29 +5,42 @@ namespace ElementalGUI
         public MainMenu()
         {
             InitializeComponent();
+
             this.StartPosition = FormStartPosition.CenterScreen;
+            this.Text = "ElementalGUI";
+
+            CartoonUI.StyleButton(button1, CartoonUI.GoodColor);
+            CartoonUI.StyleButton(button2, CartoonUI.BadColor); 
+
+            button1.Paint += (s, e) => CartoonUI.DrawButtonOutline(e, button1);
+            button2.Paint += (s, e) => CartoonUI.DrawButtonOutline(e, button2);
+
+            this.FormClosing += Form1_FormClosing;
         }
 
-        private void play(object sender, EventArgs e)
+        private void play(object? sender, EventArgs e)
         {
-            ChooseCharacter chooseCharactersForm = new ChooseCharacter();
-            chooseCharactersForm.Show();
-            this.Hide();
+            CartoonUI.PlayClick();
+            GameFlow.NavigateTo(new ChooseCharacter());
         }
 
-        private void exit(object sender, EventArgs e)
+        private void Form1_Load(object? sender, EventArgs e)
         {
+
+        }
+
+        private void button2_Click(object? sender, EventArgs e)
+        {
+            CartoonUI.PlayClick();
             Application.Exit();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form1_FormClosing(object? sender, FormClosingEventArgs e)
         {
-
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-
+            if (!GameFlow.Navigating)
+            {
+                Application.Exit();
+            }
         }
     }
 }
