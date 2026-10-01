@@ -143,7 +143,7 @@ namespace ElementalGUI
             button1.Anchor = AnchorStyles.Bottom;
             button1.BackColor = Color.FromArgb(255, 209, 61);
             button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Comic Sans MS", 13.8F, FontStyle.Bold);
+            button1.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button1.ForeColor = Color.FromArgb(28, 20, 44);
             button1.Location = new Point(158, 673);
             button1.Name = "button1";
@@ -157,8 +157,8 @@ namespace ElementalGUI
             // 
             button2.Anchor = AnchorStyles.Bottom;
             button2.BackColor = Color.FromArgb(74, 144, 217);
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.Font = new Font("Comic Sans MS", 13.8F, FontStyle.Bold);
+            button2.FlatStyle = FlatStyle.Popup;
+            button2.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button2.ForeColor = Color.White;
             button2.Location = new Point(499, 673);
             button2.Name = "button2";
@@ -172,8 +172,8 @@ namespace ElementalGUI
             // 
             button3.Anchor = AnchorStyles.Bottom;
             button3.BackColor = Color.FromArgb(255, 99, 92);
-            button3.FlatStyle = FlatStyle.Flat;
-            button3.Font = new Font("Comic Sans MS", 13.8F, FontStyle.Bold);
+            button3.FlatStyle = FlatStyle.Popup;
+            button3.Font = new Font("Marykate", 16.1999989F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button3.ForeColor = Color.White;
             button3.Location = new Point(840, 673);
             button3.Name = "button3";
@@ -204,9 +204,9 @@ namespace ElementalGUI
             // pictureBox3
             // 
             pictureBox3.BackColor = Color.Transparent;
-            pictureBox3.Location = new Point(312, 382);
+            pictureBox3.Location = new Point(356, 411);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(556, 172);
+            pictureBox3.Size = new Size(476, 172);
             pictureBox3.TabIndex = 13;
             pictureBox3.TabStop = false;
             // 
