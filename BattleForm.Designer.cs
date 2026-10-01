@@ -32,8 +32,8 @@ namespace ElementalGUI
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
-            hpBar1 = new CartoonUI.HpBar();
-            hpBar2 = new CartoonUI.HpBar();
+            hpBar1 = new ElementalGUI.CartoonUI.HpBar();
+            hpBar2 = new ElementalGUI.CartoonUI.HpBar();
             label4 = new Label();
             label5 = new Label();
             label6 = new Label();
@@ -49,63 +49,61 @@ namespace ElementalGUI
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             SuspendLayout();
-            //
+            // 
             // label1
-            //
-            label1.AutoSize = false;
+            // 
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Comic Sans MS", 20F, FontStyle.Bold);
+            label1.Font = new Font("Marykate", 25.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(24, 105);
+            label1.ImageAlign = ContentAlignment.MiddleLeft;
+            label1.Location = new Point(87, 105);
             label1.Name = "label1";
-            label1.Size = new Size(380, 45);
+            label1.Size = new Size(196, 45);
             label1.TabIndex = 0;
             label1.Text = "CHARACTER";
             label1.TextAlign = ContentAlignment.MiddleCenter;
-            //
+            // 
             // label2
-            //
-            label2.AutoSize = false;
+            // 
             label2.BackColor = Color.Transparent;
-            label2.Font = new Font("Comic Sans MS", 20F, FontStyle.Bold);
+            label2.Font = new Font("Marykate", 25.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.White;
-            label2.Location = new Point(789, 105);
+            label2.Location = new Point(863, 105);
             label2.Name = "label2";
-            label2.Size = new Size(380, 45);
+            label2.Size = new Size(243, 45);
             label2.TabIndex = 1;
             label2.Text = "CHARACTER";
-            label2.TextAlign = ContentAlignment.MiddleCenter;
-            //
+            label2.TextAlign = ContentAlignment.MiddleRight;
+            // 
             // label3
-            //
-            label3.AutoSize = false;
+            // 
             label3.BackColor = Color.Transparent;
-            label3.Font = new Font("Comic Sans MS", 22F, FontStyle.Bold);
-            label3.ForeColor = CartoonUI.HighlightColor;
+            label3.Font = new Font("Marykate", 36F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.ForeColor = Color.FromArgb(255, 244, 100);
             label3.Location = new Point(291, 30);
             label3.Name = "label3";
             label3.Size = new Size(600, 50);
             label3.TabIndex = 2;
             label3.Text = "CHARACTER'S TURN";
             label3.TextAlign = ContentAlignment.MiddleCenter;
-            //
+            label3.Click += label3_Click;
+            // 
             // hpBar1
-            //
+            // 
             hpBar1.Location = new Point(87, 165);
             hpBar1.Name = "hpBar1";
             hpBar1.Size = new Size(254, 30);
             hpBar1.TabIndex = 3;
-            //
+            // 
             // hpBar2
-            //
+            // 
             hpBar2.Location = new Point(852, 165);
             hpBar2.Name = "hpBar2";
             hpBar2.Size = new Size(254, 30);
             hpBar2.TabIndex = 4;
-            //
+            // 
             // label4
-            //
-            label4.AutoSize = false;
+            // 
             label4.BackColor = Color.Transparent;
             label4.Font = new Font("Comic Sans MS", 13F, FontStyle.Bold);
             label4.ForeColor = Color.White;
@@ -115,10 +113,9 @@ namespace ElementalGUI
             label4.TabIndex = 5;
             label4.Text = "100/100";
             label4.TextAlign = ContentAlignment.MiddleCenter;
-            //
+            // 
             // label5
-            //
-            label5.AutoSize = false;
+            // 
             label5.BackColor = Color.Transparent;
             label5.Font = new Font("Comic Sans MS", 13F, FontStyle.Bold);
             label5.ForeColor = Color.White;
@@ -128,27 +125,26 @@ namespace ElementalGUI
             label5.TabIndex = 6;
             label5.Text = "100/100";
             label5.TextAlign = ContentAlignment.MiddleCenter;
-            //
+            // 
             // label6
-            //
-            label6.AutoSize = false;
+            // 
             label6.BackColor = Color.Transparent;
-            label6.Font = new Font("Comic Sans MS", 14F, FontStyle.Bold);
-            label6.ForeColor = CartoonUI.HighlightColor;
+            label6.Font = new Font("Marykate", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label6.ForeColor = Color.FromArgb(255, 244, 100);
             label6.Location = new Point(191, 606);
             label6.Name = "label6";
             label6.Size = new Size(800, 36);
             label6.TabIndex = 7;
             label6.Text = "Choose your action!";
             label6.TextAlign = ContentAlignment.MiddleCenter;
-            //
+            // 
             // button1
-            //
+            // 
             button1.Anchor = AnchorStyles.Bottom;
-            button1.BackColor = CartoonUI.GoldColor;
+            button1.BackColor = Color.FromArgb(255, 209, 61);
             button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Comic Sans MS", 13.8F, FontStyle.Bold);
-            button1.ForeColor = CartoonUI.InkColor;
+            button1.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            button1.ForeColor = Color.FromArgb(28, 20, 44);
             button1.Location = new Point(158, 673);
             button1.Name = "button1";
             button1.Size = new Size(184, 45);
@@ -156,13 +152,13 @@ namespace ElementalGUI
             button1.Text = "BASIC ATTACK";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
-            //
+            // 
             // button2
-            //
+            // 
             button2.Anchor = AnchorStyles.Bottom;
             button2.BackColor = Color.FromArgb(74, 144, 217);
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.Font = new Font("Comic Sans MS", 13.8F, FontStyle.Bold);
+            button2.FlatStyle = FlatStyle.Popup;
+            button2.Font = new Font("Marykate", 16.1999989F, FontStyle.Regular, GraphicsUnit.Point, 0);
             button2.ForeColor = Color.White;
             button2.Location = new Point(499, 673);
             button2.Name = "button2";
@@ -171,13 +167,13 @@ namespace ElementalGUI
             button2.Text = "DEFEND";
             button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
-            //
+            // 
             // button3
-            //
+            // 
             button3.Anchor = AnchorStyles.Bottom;
-            button3.BackColor = CartoonUI.BadColor;
-            button3.FlatStyle = FlatStyle.Flat;
-            button3.Font = new Font("Comic Sans MS", 13.8F, FontStyle.Bold);
+            button3.BackColor = Color.FromArgb(255, 99, 92);
+            button3.FlatStyle = FlatStyle.Popup;
+            button3.Font = new Font("Marykate", 16.1999989F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button3.ForeColor = Color.White;
             button3.Location = new Point(840, 673);
             button3.Name = "button3";
@@ -186,45 +182,45 @@ namespace ElementalGUI
             button3.Text = "SPECIAL (3)";
             button3.UseVisualStyleBackColor = false;
             button3.Click += button3_Click;
-            //
+            // 
             // pictureBox1
-            //
+            // 
             pictureBox1.BackColor = Color.Transparent;
             pictureBox1.Location = new Point(94, 282);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(293, 301);
             pictureBox1.TabIndex = 11;
             pictureBox1.TabStop = false;
-            //
+            // 
             // pictureBox2
-            //
+            // 
             pictureBox2.BackColor = Color.Transparent;
             pictureBox2.Location = new Point(813, 282);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(293, 301);
             pictureBox2.TabIndex = 12;
             pictureBox2.TabStop = false;
-            //
+            // 
             // pictureBox3
-            //
+            // 
             pictureBox3.BackColor = Color.Transparent;
-            pictureBox3.Location = new Point(312, 382);
+            pictureBox3.Location = new Point(356, 411);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(556, 172);
+            pictureBox3.Size = new Size(476, 172);
             pictureBox3.TabIndex = 13;
             pictureBox3.TabStop = false;
-            //
+            // 
             // pictureBox4
-            //
+            // 
             pictureBox4.BackColor = Color.Transparent;
             pictureBox4.Location = new Point(274, 346);
             pictureBox4.Name = "pictureBox4";
             pictureBox4.Size = new Size(150, 150);
             pictureBox4.TabIndex = 14;
             pictureBox4.TabStop = false;
-            //
+            // 
             // BattleForm
-            //
+            // 
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1182, 753);
             Controls.Add(pictureBox4);

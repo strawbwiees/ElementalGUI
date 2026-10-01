@@ -40,12 +40,11 @@ namespace ElementalGUI
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             SuspendLayout();
-            //
+            // 
             // label1
-            //
-            label1.AutoSize = false;
+            // 
             label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Comic Sans MS", 24F, FontStyle.Bold);
+            label1.Font = new Font("Marykate", 28.1999989F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.FromArgb(126, 187, 255);
             label1.Location = new Point(122, 177);
             label1.Name = "label1";
@@ -54,13 +53,11 @@ namespace ElementalGUI
             label1.Text = "CHARACTER";
             label1.TextAlign = ContentAlignment.MiddleCenter;
             label1.Click += label1_Click;
-            //
+            // 
             // label2
-            //
-            label2.AutoSize = false;
+            // 
             label2.BackColor = Color.Transparent;
-            label2.Font = new Font("Comic Sans MS", 24F, FontStyle.Bold);
-            label2.ForeColor = CartoonUI.BadColor;
+            label2.Font = new Font("Marykate", 28.1999989F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label2.Location = new Point(737, 177);
             label2.Name = "label2";
             label2.Size = new Size(300, 55);
@@ -68,13 +65,11 @@ namespace ElementalGUI
             label2.Text = "CHARACTER";
             label2.TextAlign = ContentAlignment.MiddleCenter;
             label2.Click += label2_Click;
-            //
+            // 
             // label3
-            //
-            label3.AutoSize = false;
+            // 
             label3.BackColor = Color.Transparent;
             label3.Font = new Font("Comic Sans MS", 44F, FontStyle.Bold);
-            label3.ForeColor = CartoonUI.HighlightColor;
             label3.Location = new Point(491, 331);
             label3.Name = "label3";
             label3.Size = new Size(200, 100);
@@ -82,13 +77,12 @@ namespace ElementalGUI
             label3.Text = "VS";
             label3.TextAlign = ContentAlignment.MiddleCenter;
             label3.Click += label3_Click;
-            //
+            // 
             // button1
-            //
-            button1.BackColor = CartoonUI.GoldColor;
+            // 
+            button1.BackColor = SystemColors.ActiveCaption;
             button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Comic Sans MS", 18F, FontStyle.Bold);
-            button1.ForeColor = CartoonUI.InkColor;
+            button1.Font = new Font("Marykate", 28.1999989F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.Location = new Point(445, 628);
             button1.Name = "button1";
             button1.Size = new Size(295, 68);
@@ -96,9 +90,9 @@ namespace ElementalGUI
             button1.Text = "START BATTLE";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
-            //
+            // 
             // pictureBox1
-            //
+            // 
             pictureBox1.BackColor = Color.Transparent;
             pictureBox1.Location = new Point(145, 240);
             pictureBox1.Name = "pictureBox1";
@@ -106,9 +100,9 @@ namespace ElementalGUI
             pictureBox1.TabIndex = 4;
             pictureBox1.TabStop = false;
             pictureBox1.Click += pictureBox1_Click;
-            //
+            // 
             // pictureBox2
-            //
+            // 
             pictureBox2.BackColor = Color.Transparent;
             pictureBox2.Location = new Point(762, 240);
             pictureBox2.Name = "pictureBox2";
@@ -116,9 +110,9 @@ namespace ElementalGUI
             pictureBox2.TabIndex = 5;
             pictureBox2.TabStop = false;
             pictureBox2.Click += pictureBox2_Click;
-            //
+            // 
             // pictureBox3
-            //
+            // 
             pictureBox3.BackColor = Color.Transparent;
             pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
             pictureBox3.Location = new Point(446, 37);
@@ -128,9 +122,9 @@ namespace ElementalGUI
             pictureBox3.TabIndex = 6;
             pictureBox3.TabStop = false;
             pictureBox3.Click += pictureBox3_Click;
-            //
+            // 
             // BattleIntro
-            //
+            // 
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1182, 753);
             Controls.Add(pictureBox3);
