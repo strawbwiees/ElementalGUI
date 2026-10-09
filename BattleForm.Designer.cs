@@ -27,7 +27,7 @@ namespace ElementalGUI
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
-        {
+        { //streak
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BattleForm));
             label1 = new Label();
             label2 = new Label();
@@ -56,9 +56,9 @@ namespace ElementalGUI
             label1.Font = new Font("Marykate", 25.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.White;
             label1.ImageAlign = ContentAlignment.MiddleLeft;
-            label1.Location = new Point(87, 105);
+            label1.Location = new Point(87, 100);
             label1.Name = "label1";
-            label1.Size = new Size(196, 45);
+            label1.Size = new Size(254, 52);
             label1.TabIndex = 0;
             label1.Text = "CHARACTER";
             label1.TextAlign = ContentAlignment.MiddleCenter;
@@ -68,9 +68,9 @@ namespace ElementalGUI
             label2.BackColor = Color.Transparent;
             label2.Font = new Font("Marykate", 25.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.White;
-            label2.Location = new Point(863, 105);
+            label2.Location = new Point(852, 100);
             label2.Name = "label2";
-            label2.Size = new Size(243, 45);
+            label2.Size = new Size(254, 52);
             label2.TabIndex = 1;
             label2.Text = "CHARACTER";
             label2.TextAlign = ContentAlignment.MiddleRight;
@@ -80,9 +80,9 @@ namespace ElementalGUI
             label3.BackColor = Color.Transparent;
             label3.Font = new Font("Marykate", 36F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label3.ForeColor = Color.FromArgb(255, 244, 100);
-            label3.Location = new Point(291, 30);
+            label3.Location = new Point(91, 20);
             label3.Name = "label3";
-            label3.Size = new Size(600, 50);
+            label3.Size = new Size(1000, 80);
             label3.TabIndex = 2;
             label3.Text = "CHARACTER'S TURN";
             label3.TextAlign = ContentAlignment.MiddleCenter;
@@ -131,9 +131,9 @@ namespace ElementalGUI
             label6.BackColor = Color.Transparent;
             label6.Font = new Font("Marykate", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label6.ForeColor = Color.FromArgb(255, 244, 100);
-            label6.Location = new Point(191, 606);
+            label6.Location = new Point(91, 606);
             label6.Name = "label6";
-            label6.Size = new Size(800, 36);
+            label6.Size = new Size(1000, 40);
             label6.TabIndex = 7;
             label6.Text = "Choose your action!";
             label6.TextAlign = ContentAlignment.MiddleCenter;
@@ -222,6 +222,8 @@ namespace ElementalGUI
             // BattleForm
             // 
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            // art is 1200x800 - stretch it so the playfield isn't cut off
+            BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1182, 753);
             Controls.Add(pictureBox4);
             Controls.Add(pictureBox3);

@@ -51,9 +51,9 @@ namespace ElementalGUI
             label1.BackColor = Color.Transparent;
             label1.Font = new Font("Marykate", 40.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(141, 45);
+            label1.Location = new Point(0, 45);
             label1.Name = "label1";
-            label1.Size = new Size(900, 90);
+            label1.Size = new Size(1182, 90);
             label1.TabIndex = 0;
             label1.Text = "CHOOSE YOUR CHARACTER";
             label1.TextAlign = ContentAlignment.MiddleCenter;
@@ -183,6 +183,8 @@ namespace ElementalGUI
             // ChooseCharacter
             // 
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            // art is 1200x800 - stretch it so the playfield isn't cut off
+            BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1182, 753);
             Controls.Add(button1);
             Controls.Add(label6);

@@ -44,9 +44,9 @@ namespace ElementalGUI
             button1.FlatStyle = FlatStyle.Popup;
             button1.Font = new Font("Marykate", 16.1999989F);
             button1.ForeColor = Color.White;
-            button1.Location = new Point(77, 320);
+            button1.Location = new Point(100, 340);
             button1.Name = "button1";
-            button1.Size = new Size(140, 45);
+            button1.Size = new Size(150, 48);
             button1.TabIndex = 0;
             button1.Text = "CANCEL";
             button1.UseVisualStyleBackColor = false;
@@ -56,9 +56,9 @@ namespace ElementalGUI
             // 
             label1.Font = new Font("Marykate", 23.9999981F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.FromArgb(255, 244, 100);
-            label1.Location = new Point(51, 29);
+            label1.Location = new Point(30, 29);
             label1.Name = "label1";
-            label1.Size = new Size(400, 45);
+            label1.Size = new Size(500, 50);
             label1.TabIndex = 1;
             label1.Text = "CONFIRM SELECTION";
             label1.TextAlign = ContentAlignment.MiddleCenter;
@@ -69,9 +69,9 @@ namespace ElementalGUI
             label2.Font = new Font("Marykate", 19.7999973F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.FromArgb(126, 187, 255);
             label2.ImageAlign = ContentAlignment.MiddleLeft;
-            label2.Location = new Point(92, 110);
+            label2.Location = new Point(60, 110);
             label2.Name = "label2";
-            label2.Size = new Size(101, 35);
+            label2.Size = new Size(190, 40);
             label2.TabIndex = 2;
             label2.Text = "PLAYER 1:";
             label2.TextAlign = ContentAlignment.MiddleLeft;
@@ -81,9 +81,9 @@ namespace ElementalGUI
             // 
             label3.Font = new Font("Marykate", 19.7999973F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label3.ForeColor = Color.FromArgb(255, 99, 92);
-            label3.Location = new Point(92, 170);
+            label3.Location = new Point(60, 170);
             label3.Name = "label3";
-            label3.Size = new Size(101, 35);
+            label3.Size = new Size(190, 40);
             label3.TabIndex = 3;
             label3.Text = "PLAYER 2:";
             label3.TextAlign = ContentAlignment.MiddleLeft;
@@ -94,9 +94,9 @@ namespace ElementalGUI
             label4.Font = new Font("Marykate", 19.7999973F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label4.ForeColor = Color.White;
             label4.ImageAlign = ContentAlignment.MiddleLeft;
-            label4.Location = new Point(254, 110);
+            label4.Location = new Point(270, 110);
             label4.Name = "label4";
-            label4.Size = new Size(171, 35);
+            label4.Size = new Size(240, 40);
             label4.TabIndex = 4;
             label4.Text = "CHARACTER";
             label4.TextAlign = ContentAlignment.MiddleLeft;
@@ -107,9 +107,9 @@ namespace ElementalGUI
             label5.Font = new Font("Marykate", 19.7999973F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label5.ForeColor = Color.White;
             label5.ImageAlign = ContentAlignment.MiddleLeft;
-            label5.Location = new Point(254, 170);
+            label5.Location = new Point(270, 170);
             label5.Name = "label5";
-            label5.Size = new Size(171, 35);
+            label5.Size = new Size(240, 40);
             label5.TabIndex = 5;
             label5.Text = "CHARACTER";
             label5.TextAlign = ContentAlignment.MiddleLeft;
@@ -121,9 +121,9 @@ namespace ElementalGUI
             button2.FlatStyle = FlatStyle.Popup;
             button2.Font = new Font("Marykate", 16.1999989F);
             button2.ForeColor = Color.White;
-            button2.Location = new Point(254, 320);
+            button2.Location = new Point(310, 340);
             button2.Name = "button2";
-            button2.Size = new Size(140, 45);
+            button2.Size = new Size(150, 48);
             button2.TabIndex = 6;
             button2.Text = "CONFIRM";
             button2.UseVisualStyleBackColor = false;
@@ -133,9 +133,9 @@ namespace ElementalGUI
             // 
             label6.Font = new Font("Marykate", 22.1999989F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label6.ForeColor = Color.White;
-            label6.Location = new Point(102, 250);
+            label6.Location = new Point(60, 255);
             label6.Name = "label6";
-            label6.Size = new Size(275, 35);
+            label6.Size = new Size(440, 45);
             label6.TabIndex = 7;
             label6.Text = "Are you ready?";
             label6.TextAlign = ContentAlignment.MiddleCenter;
@@ -144,7 +144,11 @@ namespace ElementalGUI
             // ConfirmSelection
             // 
             BackColor = Color.FromArgb(44, 32, 66);
-            ClientSize = new Size(503, 406);
+            ClientSize = new Size(560, 440);
+            // fixed dialog: content doesn't reflow, so don't let it be resized
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Controls.Add(label6);
             Controls.Add(button2);
             Controls.Add(label5);
