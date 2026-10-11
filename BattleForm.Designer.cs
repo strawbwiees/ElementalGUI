@@ -55,8 +55,8 @@ namespace ElementalGUI
             label1.BackColor = Color.Transparent;
             label1.Font = new Font("Marykate", 25.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.White;
-            label1.ImageAlign = ContentAlignment.MiddleLeft;
-            label1.Location = new Point(87, 100);
+            // vertical: hpBar1.Top (165) - 10px gap - label height
+            label1.Location = new Point(87, 103);
             label1.Name = "label1";
             label1.Size = new Size(254, 52);
             label1.TabIndex = 0;
@@ -66,14 +66,15 @@ namespace ElementalGUI
             // label2
             // 
             label2.BackColor = Color.Transparent;
-            label2.Font = new Font("Marykate", 25.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            // label2: mirrors label1 - same font, size, y, same anchor symmetry
+            label2.Font = new Font("Marykate", 25.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.White;
-            label2.Location = new Point(852, 100);
+            label2.Location = new Point(852, 103);
             label2.Name = "label2";
             label2.Size = new Size(254, 52);
             label2.TabIndex = 1;
             label2.Text = "CHARACTER";
-            label2.TextAlign = ContentAlignment.MiddleRight;
+            label2.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label3
             // 
@@ -94,6 +95,7 @@ namespace ElementalGUI
             hpBar1.Name = "hpBar1";
             hpBar1.Size = new Size(254, 30);
             hpBar1.TabIndex = 3;
+            hpBar1.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             // 
             // hpBar2
             // 
@@ -101,6 +103,7 @@ namespace ElementalGUI
             hpBar2.Name = "hpBar2";
             hpBar2.Size = new Size(254, 30);
             hpBar2.TabIndex = 4;
+            hpBar2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             // 
             // label4
             // 
