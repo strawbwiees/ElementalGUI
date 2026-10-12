@@ -127,6 +127,8 @@ namespace ElementalGUI
             // BattleIntro
             // 
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            // art is 1200x800 - stretch it so the playfield isn't cut off
+            BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1182, 753);
             Controls.Add(pictureBox3);
             Controls.Add(pictureBox2);

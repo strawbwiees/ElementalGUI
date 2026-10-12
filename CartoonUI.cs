@@ -56,8 +56,11 @@ namespace ElementalGUI
 
             public HpBar()
             {
+                // transparent so the rounded corners don't show a white box
                 SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer |
-                         ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
+                         ControlStyles.UserPaint | ControlStyles.ResizeRedraw |
+                         ControlStyles.SupportsTransparentBackColor, true);
+                BackColor = Color.Transparent;
             }
 
             public void SetValues(int current, int max)

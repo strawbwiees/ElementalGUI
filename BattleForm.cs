@@ -14,7 +14,7 @@ namespace ElementalGUI
 
         private int player1HP = 100;
         private int player2HP = 100;
-
+//oioioi
         private bool player1Turn = true;
 
         private bool battleOver = false;
@@ -104,10 +104,27 @@ namespace ElementalGUI
             };
 
             SetupBattle();
+
+            // keep each name centered over its health bar whenever layout changes
+            this.Resize += (s, e) => AlignNameLabels();
+            this.Load += (s, e) => AlignNameLabels();
+        }
+
+        // hp bars are the reference: name x follows the bar, y = bar.Top - gap - height
+        private void AlignNameLabels()
+        {
+            const int verticalGap = 10;
+
+            label1.Location = new Point(hpBar1.Left, hpBar1.Top - verticalGap - label1.Height);
+            label2.Location = new Point(hpBar2.Left, hpBar2.Top - verticalGap - label2.Height);
         }
 
         private void SetupBattle()
         {
+            // fresh battle: each player gets 3 specials
+            player1Specials = 3;
+            player2Specials = 3;
+
             label1.Text = player1Character.ToUpper();
             label2.Text = player2Character.ToUpper();
 
@@ -193,6 +210,10 @@ namespace ElementalGUI
             }
 
             UseSpecial();
+
+            // reflect the new count right away (button is disabled during the anim)
+            UpdateSpecialButton();
+
             BeginAttack(isSpecial: true);
         }
 
@@ -203,13 +224,15 @@ namespace ElementalGUI
 
         private void UseSpecial()
         {
-            if (player1Turn) player1Specials--;
-            else player2Specials--;
+            // exactly one use, never below zero
+            if (player1Turn) player1Specials = Math.Max(0, player1Specials - 1);
+            else player2Specials = Math.Max(0, player2Specials - 1);
         }
 
         private void UpdateSpecialButton()
         {
             button3.Text = "SPECIAL (" + GetSpecialUses() + ")";
+            button3.Enabled = GetSpecialUses() > 0;
         }
 
 
