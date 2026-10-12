@@ -10,11 +10,11 @@ namespace ElementalGUI
     internal static class CartoonUI
     {
         // fonts + palette used everywhere
-        public static readonly Font TitleFont = new Font("Comic Sans MS", 48F, FontStyle.Bold);
-        public static readonly Font HeadingFont = new Font("Comic Sans MS", 28F, FontStyle.Bold);
-        public static readonly Font BigFont = new Font("Comic Sans MS", 25.8F, FontStyle.Bold);
-        public static readonly Font MediumFont = new Font("Comic Sans MS", 16.2F, FontStyle.Bold);
-        public static readonly Font ButtonFont = new Font("Comic Sans MS", 13.8F, FontStyle.Bold);
+        public static readonly Font TitleFont = new Font("Marykate", 48F, FontStyle.Bold);
+        public static readonly Font HeadingFont = new Font("Marykate", 28F, FontStyle.Bold);
+        public static readonly Font BigFont = new Font("Marykate", 25.8F, FontStyle.Bold);
+        public static readonly Font MediumFont = new Font("Marykate", 16.2F, FontStyle.Bold);
+        public static readonly Font ButtonFont = new Font("Marykate", 15F, FontStyle.Bold);
 
         public static readonly Color InkColor = Color.FromArgb(28, 20, 44);      // Deep purple ink
         public static readonly Color HighlightColor = Color.FromArgb(255, 244, 100); // Sunbeam yellow
@@ -28,7 +28,7 @@ namespace ElementalGUI
         public static void StyleButton(Button button, Color face)
         {
             button.BackColor = face;
-            button.ForeColor = Color.White;
+            button.ForeColor = Color.Black;
             button.FlatStyle = FlatStyle.Flat;
             button.FlatAppearance.BorderSize = 0;
             button.Font = ButtonFont;
@@ -177,7 +177,7 @@ namespace ElementalGUI
                 for (int i = 0; i < 24; i++)
                 {
                     double angle = i * Math.PI / 12;
-                    float radius = (i % 2 == 0 ? 80f : 55f) * scale;
+                    float radius = (i % 2 == 0 ? 100 : 60f) * scale;
                     points[i] = new PointF(center.X + (float)Math.Cos(angle) * radius,
                                            center.Y + (float)Math.Sin(angle) * radius);
                 }
@@ -187,7 +187,7 @@ namespace ElementalGUI
                 g.FillPolygon(fill, points);
                 g.DrawPolygon(ink, points);
 
-                using var font = new Font("Comic Sans MS", 24F * scale, FontStyle.Bold);
+                using var font = new Font("Marykate", 24F * scale, FontStyle.Bold);
                 using var textInk = new SolidBrush(InkColor);
                 var size = g.MeasureString(_word, font);
                 g.DrawString(_word, font, textInk,
