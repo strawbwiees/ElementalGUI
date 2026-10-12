@@ -14,7 +14,7 @@ namespace ElementalGUI
 
         private int player1HP = 100;
         private int player2HP = 100;
-//oioioi
+//SHET SHET SHET NAKITA AKO
         private bool player1Turn = true;
 
         private bool battleOver = false;
