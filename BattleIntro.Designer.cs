@@ -69,7 +69,8 @@ namespace ElementalGUI
             // label3
             // 
             label3.BackColor = Color.Transparent;
-            label3.Font = new Font("Comic Sans MS", 44F, FontStyle.Bold);
+            label3.Font = new Font("Marykate", 43.7999954F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.ForeColor = Color.White;
             label3.Location = new Point(491, 331);
             label3.Name = "label3";
             label3.Size = new Size(200, 100);
